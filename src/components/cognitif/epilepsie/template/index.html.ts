@@ -1,12 +1,10 @@
 import css from "./style.css";
 
-export default /*html*/ `
-    style>${css}</style>
+export const template = /*html*/ `
+ 
     <div> Epilepsie</div>
     <div> 
         <button>-</button>
         <button>+</button>
      </div>
-
-
 `;

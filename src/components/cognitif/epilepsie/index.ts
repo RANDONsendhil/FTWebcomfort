@@ -1,28 +1,12 @@
-import indexEpilepsie from "./template/index.html";
+import { template } from "./template/index.html.js";
 
 export class FTEpilepsie extends HTMLElement {
 	constructor() {
+		console.log("FTEpilepsie component initialized");
 		super();
 		const shadow = this.attachShadow({ mode: "open" });
-		shadow.innerHTML = indexEpilepsie;
-	}
-
-	connectedCallback() {
-		console.log("Connected call back for FTEpilepsie");
-
-		const input = this.shadowRoot!.querySelector("input")!;
-		input.addEventListener("input", () => {
-			const value = (input as HTMLInputElement).value;
-			// Dispatch a custom event
-			//   this.dispatchEvent(
-			//     new CustomEvent("search-change", {
-			//       detail: { value },
-			//       bubbles: true, // let it bubble up
-			//       composed: true, // allow crossing shadow DOM
-			//     })
-			//   );
-		});
+		shadow.innerHTML = template;
 	}
 }
 
-customElements.define("ftEpilepsie", FTEpilepsie);
+customElements.define("ft-epilepsie", FTEpilepsie);

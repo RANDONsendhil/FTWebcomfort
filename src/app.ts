@@ -1,9 +1,8 @@
-// Import the main app and subcomponents
-import "./main-app.ts";
-import "./components/cognitif/epilepsie/index.ts";
+import { FTEpilepsie } from "./components/cognitif/epilepsie/index.js";
+import { MainApp } from "./main-app.js";
 
-// Create the main-app element
-const app = document.createElement("main-app");
+const mainapp = new MainApp();
+console.log("MainApp initialized:", mainapp);
+const epilepsieInstance = new FTEpilepsie();
 
-// Append it to the body (or any container)
-document.body.appendChild(app);
+console.log("FTEpilepsie initialized:", epilepsieInstance);
