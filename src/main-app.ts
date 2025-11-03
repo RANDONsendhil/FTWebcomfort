@@ -7,7 +7,7 @@ export class MainApp extends HTMLElement {
 	    <div style="padding: 1rem;">
 	      <h2>Main App Component</h2>
 		<h5>ft-epilepsie</h5>
-	      // <ft-epilepsie></ft-epilepsie>
+	     <ft-epilepsie></ft-epilepsie>
 	    </div>
 	  `;
 		// Attach shadow root

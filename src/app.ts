@@ -1,5 +1,5 @@
-import { FTEpilepsie } from "./components/cognitif/epilepsie/index.js";
-import { MainApp } from "./main-app.js";
+import { FTEpilepsie } from "./components/cognitif/epilepsie/index";
+import { MainApp } from "./main-app";
 
 const mainapp = new MainApp();
 console.log("MainApp initialized:", mainapp);

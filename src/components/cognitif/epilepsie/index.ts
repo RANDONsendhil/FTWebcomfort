@@ -1,4 +1,5 @@
-import { template } from "./template/index.html.js";
+import { LitElement, html, css } from "lit";
+import { template } from "./template/index.html";
 
 export class FTEpilepsie extends HTMLElement {
 	constructor() {
