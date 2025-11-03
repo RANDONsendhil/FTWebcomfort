@@ -6,8 +6,8 @@ export class MainApp extends HTMLElement {
 		this.innerHTML = `
 	    <div style="padding: 1rem;">
 	      <h2>Main App Component</h2>
-		<h5>ft-epilepsie</h5>
-	     <ft-epilepsie></ft-epilepsie>
+		  <h5>ft-epilepsie</h5>
+	      <ft-epilepsie></ft-epilepsie>
 	    </div>
 	  `;
 		// Attach shadow root
