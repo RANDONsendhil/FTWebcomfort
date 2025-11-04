@@ -1,5 +1,5 @@
 export default /*css*/ `
-.epilepsie-container {
+.container {
     padding: 20px;
     border: 2px solid #ddd;
     border-radius: 8px;
@@ -7,13 +7,15 @@ export default /*css*/ `
     font-family: Arial, sans-serif;
     max-width: 300px;
 }
-
-.epilepsie-container h3 {
+.container h3 {
     margin: 0 0 15px 0;
     color: #333;
     text-align: center;
 }
-
+.comp-container{
+    display: flex;
+    flex-direction: row;
+}
 .controls {
     display: flex;
     align-items: center;
@@ -50,53 +52,47 @@ export default /*css*/ `
 }
 
 .toggle-btn {
-    width: 100%;
-    padding: 12px;
+       width: 58px;
+    height: 28px;
     border: 2px solid #ddd;
     border-radius: 25px;
     background: #fff;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    margin: 0 auto;
 }
 
 .toggle-btn.active {
     background: #28a745;
     border-color: #28a745;
-    color: white;
 }
 
 .toggle-btn.inactive {
     background: #dc3545;
     border-color: #dc3545;
-    color: white;
-}
-
-.toggle-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.toggle-text {
-    font-weight: bold;
-    transition: all 0.3s ease;
 }
 
 .toggle-indicator {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: currentColor;
-    transition: all 0.3s ease;
-    opacity: 0.8;
+    width: 23px;
+    height: 23px;
+    border-radius: 46%;
+    background: white;
+    position: absolute;
+    top: 0px;
+    left: 4px;
+    transition: left 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+ 
 }
 
 .toggle-btn.active .toggle-indicator {
-    animation: pulse 2s infinite;
+    left: 31px; /* Move to right side when active */
+}
+
+.toggle-btn.inactive .toggle-indicator {
+    left: 0px; /* Stay on left side when inactive */
 }
 
 @keyframes pulse {
@@ -115,5 +111,16 @@ export default /*css*/ `
 
 #statusText {
     color: #495057;
+}
+
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after {
+  /* Neutralise animations/transitions */
+  animation: none !important;
+  transition: none !important;
+  animation-play-state: paused !important;
+  scroll-behavior: auto !important;
+  will-change: auto !important;
 }
 `;

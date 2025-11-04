@@ -1,15 +1,16 @@
 import css from "./style.css";
+import animation from "./animation.gif";
 
-export const template = /*html*/ `
+export default /*html*/ `
     <style>${css}</style>
-    <div class="epilepsie-container">
-        <h3>Epilepsie Control</h3>
- 
+    <div class="container">
         <div class="toggle-container">
-            <button id="btn-epilepsie" class="toggle-btn active">
-                <span class="toggle-text">Activer Animation</span>
+        <div class="comp-container">
+         <h3 id="componentName"></h3>
+            <button class="toggle-btn inactive">
                 <div class="toggle-indicator"></div>
             </button>
+            </div>
         </div>
         <div class="status">
             <span id="statusText">Animation: Activée</span>
