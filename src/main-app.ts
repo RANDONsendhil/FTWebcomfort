@@ -4,11 +4,13 @@ export class MainApp extends HTMLElement {
 	constructor() {
 		super();
 		this.innerHTML = `
-	    <div style="padding: 1rem;">
-	      <h2>Main App Component</h2>
-		  <h5>ft-epilepsie</h5>
-	      <ft-epilepsie></ft-epilepsie>
+		  <h2>Main App Component</h2>
+	    <div style="padding: 2px;">
+		    <ft-epilepsie></ft-epilepsie>
 	    </div>
+		  <div style="padding: 2px;">
+			<ft-dyslexie></ft-dyslexie>
+		</div>
 	  `;
 		// Attach shadow root
 		const shadow = this.attachShadow({ mode: "open" });
