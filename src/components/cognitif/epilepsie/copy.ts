@@ -27,7 +27,6 @@ export class FTEpilepsie extends HTMLElement {
 
 	attributeChangedCallback(name: string, oldValue: string, newValue: string) {
 		if (oldValue === newValue || !newValue) return;
-
 		if (this.#htmlConnected) (this as any)[name] = newValue;
 		// @ts-ignore
 		else (this.#initConfig as any)[name] = newValue;

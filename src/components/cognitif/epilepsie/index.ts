@@ -9,7 +9,7 @@ export class FTEpilepsieConfig {
 
 export class FTEpilepsie extends FTWebconfortBaseComponent<FTEpilepsieConfig> {
 	constructor() {
-		super("FTEpilepsie", template, new FTEpilepsieConfig());
+		super("Epilepsie", template, new FTEpilepsieConfig());
 		console.log("FTEpilepsie component initialized");
 	}
 
@@ -25,7 +25,7 @@ export class FTEpilepsie extends FTWebconfortBaseComponent<FTEpilepsieConfig> {
 
 	protected updateText(): void {
 		if (!this.$textStatus) return;
-		this.$textStatus.textContent = this.active ? "Animation: Activée" : "Animation: Désactivée";
+		this.$textStatus.textContent = this.active ? "Animation: Désactivée" : "Animation: Activée";
 	}
 }
 

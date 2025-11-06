@@ -1,99 +1,71 @@
-// base-toggle.ts
-export abstract class FTWebconfortBaseComponent<TConfig> extends HTMLElement {
-	public readonly name: string;
-	protected $componentName?: HTMLSpanElement | null;
-	protected _htmlConnected = false;
-	protected _active = false;
-	protected _config: TConfig;
+import { createGlobalTemplate } from "../style/globalIndex.html";
+
+export class FTWebconfortBaseComponent<T> extends HTMLElement {
+	protected config: T;
 	protected $btnToggle?: HTMLButtonElement | null;
 	protected $textStatus?: HTMLSpanElement | null;
+	protected $componentName?: HTMLHeadingElement | null;
 
-	constructor(name: string, template: string, config: TConfig) {
+	constructor(componentName: string, template: string, config: T) {
 		super();
-		this.name = name;
+		this.config = config;
+
 		const shadow = this.attachShadow({ mode: "open" });
-		shadow.innerHTML = template;
-		this._config = config;
-		this._initializeDOMReferences();
-		this._updateComponentName();
-	}
 
-	static get observedAttributes() {
-		return ["active", "name"];
-	}
+		// Use global template with component-specific content
+		shadow.innerHTML = createGlobalTemplate(componentName, template);
 
-	attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-		if (oldValue === newValue || !newValue) return;
-		if (this._htmlConnected) (this as any)[name] = newValue;
-		else (this._config as any)[name] = newValue;
+		// Initialize DOM references
+		this.$btnToggle = shadow.querySelector(".toggle-btn");
+		this.$textStatus = shadow.querySelector("#statusText");
+		this.$componentName = shadow.querySelector("#componentName");
 	}
 
 	connectedCallback() {
-		this._htmlConnected = true;
-		this._updateComponentName();
-		this.$btnToggle?.addEventListener("click", this._handleToggle);
-		for (const key in this._config) {
-			(this as any)[key] = (this._config as any)[key];
-		}
+		this.$btnToggle?.addEventListener("click", this.handleToggle);
 	}
 
 	disconnectedCallback() {
-		this.$btnToggle?.removeEventListener("click", this._handleToggle);
+		this.$btnToggle?.removeEventListener("click", this.handleToggle);
 	}
 
-	/** Abstract methods for subclasses to define */
-	protected abstract onActivate(event?: Event): void;
-	protected abstract onDeactivate(event?: Event): void;
-	protected abstract updateText(): void;
+	private handleToggle = () => {
+		const isActive = this.$btnToggle?.classList.contains("active");
 
-	get active(): boolean {
-		return this._active;
-	}
+		if (isActive) {
+			this.deactivate();
+		} else {
+			this.activate();
+		}
+	};
 
-	set active(value: boolean) {
-		this._active = value;
+	protected activate() {
+		this.$btnToggle?.classList.remove("inactive");
+		this.$btnToggle?.classList.add("active");
+		this.onActivate();
 		this.updateText();
 	}
 
-	/** Handles the toggle logic (calls activate/deactivate) */
-	private _handleToggle = (event: Event) => {
-		this._initializeDOMReferences();
-		this._active ? this._activate(event) : this._deactivate(event);
-	};
-
-	private _activate(event: Event) {
-		this.active = false;
-		this.onActivate(event);
-		this._updateButtonState();
+	protected deactivate() {
+		this.$btnToggle?.classList.remove("active");
+		this.$btnToggle?.classList.add("inactive");
+		this.onDeactivate();
+		this.updateText();
 	}
 
-	private _deactivate(event: Event) {
-		this.active = true;
-		this.onDeactivate(event);
-		this._updateButtonState();
+	protected onActivate(event?: Event): void {
+		// Override in child components
 	}
 
-	private _updateButtonState() {
-		if (this._active) {
-			this.$btnToggle?.classList.add("inactive");
-			this.$btnToggle?.classList.remove("active");
-		} else {
-			this.$btnToggle?.classList.add("active");
-			this.$btnToggle?.classList.remove("inactive");
-
-			this.updateText();
-		}
+	protected onDeactivate(event?: Event): void {
+		// Override in child components
 	}
 
-	protected _initializeDOMReferences(): void {
-		this.$btnToggle = this.shadowRoot?.querySelector(".toggle-btn");
-		this.$textStatus = this.shadowRoot?.querySelector("#statusText");
-		this.$componentName = this.shadowRoot?.querySelector("#componentName");
+	protected updateText(): void {
+		// Override in child components
 	}
 
-	protected _updateComponentName(): void {
-		if (this.$componentName) {
-			this.$componentName.textContent = this.name;
-		}
+	get active(): boolean {
+		return this.$btnToggle?.classList.contains("active") ?? false;
 	}
 }
