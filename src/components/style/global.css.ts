@@ -114,15 +114,4 @@ export default /*css*/ `
 #statusText {
     color: #495057;
 }
-
-html.reduce-motion *,
-html.reduce-motion *::before,
-html.reduce-motion *::after {
-  /* Neutralise animations/transitions */
-  animation: none !important;
-  transition: none !important;
-  animation-play-state: paused !important;
-  scroll-behavior: auto !important;
-  will-change: auto !important;
-}
 `;

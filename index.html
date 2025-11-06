@@ -3,12 +3,34 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>TypeScript Web Components App</title>
+		<style>
+			#box {
+				width: 100px;
+				height: 100px;
+				background-color: coral;
+				position: absolute;
+
+				left: 0;
+				animation: slideLeftRight 3s ease-in-out infinite;
+			}
+
+			@keyframes slideLeftRight {
+				0%,
+				100% {
+					left: 0;
+				}
+				50% {
+					left: calc(100vw - 100px);
+				}
+			}
+		</style>
 	</head>
 	<body>
+		<div id="box"></div>
 		<h5>Main app</h5>
-		<img src="animation.gif" alt="animation" style="width: 300px; height: 300px" />
 
 		<main-app></main-app>
+		<img src="animation.gif" alt="animation" style="width: 300px; height: 300px" />
 		<script type="module" src="./src/app.ts"></script>
 	</body>
 </html>
