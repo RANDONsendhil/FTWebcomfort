@@ -2,102 +2,91 @@ import { template, dropDown } from "./template/index.html";
 import { disableFontDys, enableFontDys, changeFontDys } from "./service/index";
 import { FTWebconfortBaseComponent } from "../../abscomp/abscomp";
 
+/** Configuration for Dyslexie component */
 export class FTDysConfig {
-	name = "Dyslexie";
-	active: boolean = true;
+  name = "Dyslexie";
+  active: boolean = true;
 }
 
+/** Dyslexie component as a plain TypeScript module */
 export class FTDyslexie extends FTWebconfortBaseComponent<FTDysConfig> {
-	private $dropdownContainer?: HTMLElement | null;
-	private $fontSelect?: HTMLSelectElement | null;
+  private $dropdownContainer?: HTMLElement | null;
+  private $fontSelect?: HTMLSelectElement | null;
 
-	constructor() {
-		super("Dyslexie", template, new FTDysConfig());
-		console.log("FTDysConfig component initialized");
-	}
+  constructor(container: HTMLElement) {
+    super("Dyslexie", template, new FTDysConfig(), container);
+    console.log("FTDyslexie component initialized");
 
-	connectedCallback(): void {
-		super.connectedCallback();
-		this.$dropdownContainer = this.shadowRoot?.querySelector("#dropdown-container") || null;
-	}
+    // Initialize dropdown container
+    this.$dropdownContainer = container.querySelector("#dropdown-container") || null;
+  }
 
-	protected onActivate(event?: Event): void {
-		console.log("on activate ==> Dyslexie activated, showing dropdown");
-		this.showDropdown();
-	}
+  protected override onActivate(): void {
+    console.log("on activate ==> Dyslexie activated, showing dropdown");
+    this.showDropdown();
+  }
 
-	protected onDeactivate(event?: Event): void {
-		console.log("on deactivate ==> Dyslexie deactivated, hiding dropdown");
-		this.hideDropdown();
-		// Remove the dyslexia font when deactivated
-		disableFontDys();
-	}
+  protected override onDeactivate(): void {
+    console.log("on deactivate ==> Dyslexie deactivated, hiding dropdown");
+    this.hideDropdown();
+    disableFontDys();
+  }
 
-	protected updateText(): void {
-		if (!this.$textStatus) return;
-		this.$textStatus.textContent = this.active ? "Dyslexie: Activée" : "Dyslexie: Désactivée";
-	}
+  protected override updateText(): void {
+    if (!this.$textStatus) return;
+    this.$textStatus.textContent = this.active ? "Dyslexie: Activée" : "Dyslexie: Désactivée";
+  }
 
-	private showDropdown(): void {
-		console.log("showDropdown called, container:", this.$dropdownContainer);
-		if (!this.$dropdownContainer) {
-			console.error("Dropdown container not found!");
-			return;
-		}
+  private showDropdown(): void {
+    if (!this.$dropdownContainer) {
+      console.error("Dropdown container not found!");
+      return;
+    }
 
-		// Inject the dropdown HTML
-		this.$dropdownContainer.innerHTML = dropDown;
-		this.$dropdownContainer.style.display = "block";
-		// Get reference to select element and add event listener
-		this.$fontSelect = this.shadowRoot?.querySelector("#fontDys") || null;
-		this.attachSelectListener();
-	}
+    this.$dropdownContainer.innerHTML = dropDown;
+    this.$dropdownContainer.style.display = "block";
+    this.$fontSelect = this.$dropdownContainer.querySelector("#fontDys") || null;
+    this.attachSelectListener();
+  }
 
-	private hideDropdown(): void {
-		if (!this.$dropdownContainer) return;
+  private hideDropdown(): void {
+    if (!this.$dropdownContainer) return;
 
-		// Remove event listener before clearing
-		if (this.$fontSelect) {
-			this.$fontSelect.removeEventListener("change", this.handleFontChange);
-		}
+    if (this.$fontSelect) {
+      this.$fontSelect.removeEventListener("change", this.handleFontChange);
+    }
+    this.$dropdownContainer.innerHTML = "";
+    this.$dropdownContainer.style.display = "none";
+    this.$fontSelect = null;
+  }
 
-		// Clear dropdown content
-		this.$dropdownContainer.innerHTML = "";
-		this.$dropdownContainer.style.display = "none";
-		this.$fontSelect = null;
-	}
+  private attachSelectListener(): void {
+    if (!this.$fontSelect) {
+      console.error("Font select element not found!");
+      return;
+    }
 
-	private attachSelectListener(): void {
-		if (!this.$fontSelect) {
-			console.error("Font select element not found!");
-			return;
-		}
-		// Set the first option as selected by default
-		if (this.$fontSelect.options.length > 0) {
-			this.$fontSelect.selectedIndex = 0;
-			const firstValue = this.$fontSelect.value;
-			console.log(`Default font selected: ${firstValue}`);
-			changeFontDys(firstValue);
-		}
+    // Set default font
+    if (this.$fontSelect.options.length > 0) {
+      this.$fontSelect.selectedIndex = 0;
+      changeFontDys(this.$fontSelect.value);
+    }
 
-		this.$fontSelect.addEventListener("change", this.handleFontChange);
-	}
+    this.$fontSelect.addEventListener("change", this.handleFontChange);
+  }
 
-	private handleFontChange = (e: Event): void => {
-		const select = e.target as HTMLSelectElement;
-		const fontValue = select.value;
+  private handleFontChange = (e: Event): void => {
+    const select = e.target as HTMLSelectElement;
+    const fontValue = select.value;
 
-		console.log(`Font selected: ${fontValue}`);
+    console.log(`Font selected: ${fontValue}`);
+    if (fontValue) {
+      changeFontDys(fontValue);
+    }
+  };
 
-		if (fontValue) {
-			// Apply the font change
-			changeFontDys(fontValue);
-		}
-	};
-
-	_showDysFonts() {
-		this.showDropdown();
-	}
+  /** Optional method to manually show dropdown */
+  public showDysFonts(): void {
+    this.showDropdown();
+  }
 }
-
-customElements.define("ft-dyslexie", FTDyslexie);

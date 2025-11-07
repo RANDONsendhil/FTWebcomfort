@@ -1,23 +1,33 @@
 export class MainApp extends HTMLElement {
-	connectedCallback() {}
+  private shadow: ShadowRoot;
 
-	constructor() {
-		super();
-		this.innerHTML = `
-		  <h2>Main App Component</h2>
-	    <div style="padding: 2px;">
-		    <ft-epilepsie></ft-epilepsie>
-	    </div>
-		  <div style="padding: 2px;">
-			<ft-dyslexie></ft-dyslexie>
-		</div>
-	  `;
-		// Attach shadow root
-		const shadow = this.attachShadow({ mode: "open" });
+  constructor() {
+    super();
 
-		// Inject HTML template
-		shadow.innerHTML = this.innerHTML;
-	}
+    // Attach shadow DOM
+    this.shadow = this.attachShadow({ mode: "open" });
+
+    // Inject main HTML structure
+    this.shadow.innerHTML = `
+      <h2>Main App Component</h2>
+      <div style="padding: 2px;">
+        <div id="epilepsieContainer"></div>
+      </div>
+      <div style="padding: 2px;">
+        <div id="dyslexieContainer"></div>
+      </div>
+      <div style="padding: 2px;">
+        <div id="arthroseContainer"></div>
+      </div>
+    `;
+  }
+
+  connectedCallback() {
+    // Load modules from app.ts
+    if (window.loadModules) {
+      window.loadModules(this.shadow);
+    }
+  }
 }
 
 customElements.define("main-app", MainApp);

@@ -1,71 +1,68 @@
 import { createGlobalTemplate } from "../style/globalIndex.html";
 
-export class FTWebconfortBaseComponent<T> extends HTMLElement {
-	protected config: T;
-	protected $btnToggle?: HTMLButtonElement | null;
-	protected $textStatus?: HTMLSpanElement | null;
-	protected $componentName?: HTMLHeadingElement | null;
+/**
+ * Base class for components with toggle functionality and text update
+ * @template T Config type for the component
+ */
+export class FTWebconfortBaseComponent<T> {
+  protected config: T;
+  protected $btnToggle?: HTMLButtonElement | null;
+  protected $textStatus?: HTMLSpanElement | null;
+  protected $componentName?: HTMLHeadingElement | null;
+  protected $container: HTMLElement;
 
-	constructor(componentName: string, template: string, config: T) {
-		super();
-		this.config = config;
+  constructor(componentName: string, template: string, config: T, container: HTMLElement) {
+    this.config = config;
+    this.$container = container;
 
-		const shadow = this.attachShadow({ mode: "open" });
+    // Inject HTML structure into the container
+    this.$container.innerHTML = createGlobalTemplate(componentName, template);
 
-		// Use global template with component-specific content
-		shadow.innerHTML = createGlobalTemplate(componentName, template);
+    // Initialize DOM references
+    this.$btnToggle = this.$container.querySelector(".toggle-btn");
+    this.$textStatus = this.$container.querySelector("#statusText");
+    this.$componentName = this.$container.querySelector("#componentName");
 
-		// Initialize DOM references
-		this.$btnToggle = shadow.querySelector(".toggle-btn");
-		this.$textStatus = shadow.querySelector("#statusText");
-		this.$componentName = shadow.querySelector("#componentName");
-	}
+    // Bind toggle button
+    this.$btnToggle?.addEventListener("click", () => this.handleToggle());
+  }
 
-	connectedCallback() {
-		this.$btnToggle?.addEventListener("click", this.handleToggle);
-	}
+  /** Toggle button click handler */
+  private handleToggle() {
+    if (this.active) {
+      this.deactivate();
+    } else {
+      this.activate();
+    }
+  }
 
-	disconnectedCallback() {
-		this.$btnToggle?.removeEventListener("click", this.handleToggle);
-	}
+  /** Activate the component */
+  protected activate() {
+    this.$btnToggle?.classList.remove("inactive");
+    this.$btnToggle?.classList.add("active");
+    this.onActivate();
+    this.updateText();
+  }
 
-	private handleToggle = () => {
-		const isActive = this.$btnToggle?.classList.contains("active");
+  /** Deactivate the component */
+  protected deactivate() {
+    this.$btnToggle?.classList.remove("active");
+    this.$btnToggle?.classList.add("inactive");
+    this.onDeactivate();
+    this.updateText();
+  }
 
-		if (isActive) {
-			this.deactivate();
-		} else {
-			this.activate();
-		}
-	};
+  /** Override in child to implement custom activation behavior */
+  protected onActivate(): void {}
 
-	protected activate() {
-		this.$btnToggle?.classList.remove("inactive");
-		this.$btnToggle?.classList.add("active");
-		this.onActivate();
-		this.updateText();
-	}
+  /** Override in child to implement custom deactivation behavior */
+  protected onDeactivate(): void {}
 
-	protected deactivate() {
-		this.$btnToggle?.classList.remove("active");
-		this.$btnToggle?.classList.add("inactive");
-		this.onDeactivate();
-		this.updateText();
-	}
+  /** Override in child to implement text update */
+  protected updateText(): void {}
 
-	protected onActivate(event?: Event): void {
-		// Override in child components
-	}
-
-	protected onDeactivate(event?: Event): void {
-		// Override in child components
-	}
-
-	protected updateText(): void {
-		// Override in child components
-	}
-
-	get active(): boolean {
-		return this.$btnToggle?.classList.contains("active") ?? false;
-	}
+  /** Returns whether the component is active */
+  get active(): boolean {
+    return this.$btnToggle?.classList.contains("active") ?? false;
+  }
 }

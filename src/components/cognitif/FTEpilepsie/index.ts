@@ -2,31 +2,31 @@ import template from "./template/index.html";
 import { disableAnimations, enableAnimations } from "./service/index";
 import { FTWebconfortBaseComponent } from "../../abscomp/abscomp";
 
+/** Configuration for the Epilepsie component */
 export class FTEpilepsieConfig {
-	name = "Epilepsie";
-	active: boolean = true;
+  name = "Epilepsie";
+  active: boolean = true;
 }
 
+/** Epilepsie component extending the plain TypeScript base */
 export class FTEpilepsie extends FTWebconfortBaseComponent<FTEpilepsieConfig> {
-	constructor() {
-		super("Epilepsie", template, new FTEpilepsieConfig());
-		console.log("FTEpilepsie component initialized");
-	}
+  constructor(container: HTMLElement) {
+    super("Epilepsie", template, new FTEpilepsieConfig(), container);
+    console.log("FTEpilepsie component initialized");
+  }
 
-	protected onActivate(event?: Event): void {
-		console.log("on activate ==> animation deactivate");
-		disableAnimations();
-	}
+  protected override onActivate(): void {
+    console.log("on activate ==> animations deactivated");
+    disableAnimations();
+  }
 
-	protected onDeactivate(event?: Event): void {
-		enableAnimations();
-		console.log("on deactivate ==> animation activated");
-	}
+  protected override onDeactivate(): void {
+    enableAnimations();
+    console.log("on deactivate ==> animations activated");
+  }
 
-	protected updateText(): void {
-		if (!this.$textStatus) return;
-		this.$textStatus.textContent = this.active ? "Animation: Désactivée" : "Animation: Activée";
-	}
+  protected override updateText(): void {
+    if (!this.$textStatus) return;
+    this.$textStatus.textContent = this.active ? "Animation: Désactivée" : "Animation: Activée";
+  }
 }
-
-customElements.define("ft-epilepsie", FTEpilepsie);

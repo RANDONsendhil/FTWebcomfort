@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>TypeScript Web Components App</title>
+		<!-- <link rel="stylesheet" href="https://cdn-t.ft-qvr.fr/studio/design-system/css/styles.css"> -->
 		<style>
 			#box {
 				width: 100px;
@@ -22,12 +23,38 @@
 					left: calc(100vw - 100px);
 				}
 			}
+			.zone {
+            width: 150px;
+            height: 50px;
+            background-color: #4CAF50;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+            text-align: center;
+			padding: 5px;
+        }
+        .zone:hover {
+            background-color: #45a049;
+        }
 		</style>
 	</head>
 	<body>
-		<!-- <div id="box"></div> -->
+		    <div class="zone" onclick="alert('Zone 1 clicked')">Zone 1</div>
+    <div class="zone" onclick="alert('Zone 2 clicked')">Zone 2</div>
+    <div class="zone" onclick="alert('Zone 3 clicked')">Zone 3</div>
+    <div class="zone" onclick="alert('Zone 4 clicked')">Zone 4</div>
+    <div class="zone" onclick="alert('Zone 5 clicked')">Zone 5</div>
+    <div class="zone" onclick="alert('Zone 6 clicked')">Zone 6</div>
+    <div class="zone" onclick="alert('Zone 7 clicked')">Zone 7</div>
+    <div class="zone" onclick="alert('Zone 8 clicked')">Zone 8</div>
+    <div class="zone" onclick="alert('Zone 9 clicked')">Zone 9</div>
+    <div class="zone" onclick="alert('Zone 10 clicked')">Zone 10</div>
+		<div id="box"></div>
 		<main-app></main-app>
 		<img src="animation.gif" alt="animation" style="width: 300px; height: 300px" />
 		<script type="module" src="./src/app.ts"></script>
-		
 </html>

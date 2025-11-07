@@ -1,12 +1,14 @@
 export default /*css*/ `
 .container {
-    padding: 20px;
-    border: 2px solid #ddd;
+    padding: 12px;
+    border: 0.3px solid #ddd;
     border-radius: 8px;
     background: #f9f9f9;
-    font-family: Arial, sans-serif;
-    max-width: 300px;
+    font-family: system-ui;
+    font-synthesis-weight: inherit;
+    max-width: 270px;
 }
+
 .container h3 {
     margin: 0 0 15px 0;
     color: #333;

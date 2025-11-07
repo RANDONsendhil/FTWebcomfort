@@ -1,11 +1,48 @@
+import { FTDyslexie } from "./components/cognitif/FTDyslexie";
 import { FTEpilepsie } from "./components/cognitif/FTEpilepsie/index";
-import { FTDyslexie } from "./components/cognitif/FTDyslexie/index";
-import { MainApp } from "./main-app";
+import { FTArthrose } from "./components/moteur/FTArthrose/index";
+import "./main-app"; // Import to register the custom element
 
-const mainapp = new MainApp();
-console.log("MainApp initialized:", mainapp);
-const epilepsieInstance = new FTEpilepsie();
-const dyslexie = new FTDyslexie();
+// Declare global loadModules function
+declare global {
+  interface Window {
+    loadModules: (shadowRoot: ShadowRoot) => void;
+  }
+}
 
-console.log("FTEpilepsie initialized:", epilepsieInstance);
-console.log("FTEpilepsie initialized:", dyslexie);
+/** Load and instantiate all accessibility modules */
+function loadModules(shadowRoot: ShadowRoot): void {
+  const epilepsieEl = shadowRoot.querySelector<HTMLDivElement>("#epilepsieContainer");
+  const dyslexieEl = shadowRoot.querySelector<HTMLDivElement>("#dyslexieContainer");
+  const arthroseEl = shadowRoot.querySelector<HTMLDivElement>("#arthroseContainer");
+  if (epilepsieEl) {
+    new FTEpilepsie(epilepsieEl);
+    console.log("Epilepsie module loaded");
+  }
+
+   if (dyslexieEl) {
+    new FTDyslexie(dyslexieEl);
+    console.log("Epilepsie module loaded");
+  }
+
+   if (arthroseEl) {
+    new FTArthrose(arthroseEl);
+    console.log("Arthrose module loaded");
+  }
+
+
+
+  console.log("All modules loaded successfully");
+}
+
+window.loadModules = loadModules;
+
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("FTWebcomfort app initialized");
+  
+  // Create and append main-app element
+  const mainApp = document.createElement("main-app");
+  document.body.appendChild(mainApp);
+});
+
+export { loadModules };
