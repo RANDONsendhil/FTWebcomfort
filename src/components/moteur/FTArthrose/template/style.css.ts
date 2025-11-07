@@ -92,4 +92,19 @@ export const arthroseCSS = `
   .ft-arthrose-active input + input {
     margin-left: 8px !important;
   }
+
+  /* Enhanced style class applied dynamically */
+  .ft-arthrose-enhanced-style {
+    padding: var(--arthrose-padding, 12px) !important;
+    margin: var(--arthrose-margin, 4px) !important;
+    border: var(--arthrose-border-width, 2px) solid var(--arthrose-border-color, #007bff) !important;
+    border-radius: var(--arthrose-border-radius, 6px) !important;
+    box-shadow: 0 2px 4px var(--arthrose-shadow-color, rgba(0, 123, 255, 0.2)) !important;
+    transition: all var(--arthrose-transition, 0.2s) ease !important;
+  }
+
+  .ft-arthrose-enhanced-style:hover {
+    background-color: var(--arthrose-hover-bg, rgba(0, 123, 255, 0.1)) !important;
+    transform: scale(var(--arthrose-hover-scale, 1.02)) !important;
+  }
 `;
