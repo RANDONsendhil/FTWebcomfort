@@ -1,0 +1,1101 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Webcomfort - Accessibilité Web</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet" />
+		<style>
+			:root {
+				--primary-color: #333367;
+				--secondary-color: #333367;
+				--text-color: #333333;
+				--background-color: #f8f9fa;
+				--white: #ffffff;
+				--light-gray: #e9ecef;
+				--border-color: #dee2e6;
+				--success-color: #28a745;
+				--warning-color: #ffc107;
+				--danger-color: #dc3545;
+				--fog-color: #dce3ff;
+				--athens-grey: #e9e8f1;
+			}
+
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: "Open Sans", sans-serif;
+				font-size: 16px;
+				line-height: 1.6;
+				color: var(--text-color);
+				background-color: var(--background-color);
+			}
+
+			.main-container {
+				display: flex;
+				min-height: 100vh;
+			}
+
+			/* Barre latérale */
+			.sidebar {
+				width: 320px;
+				background: var(--white);
+				border-right: 1px solid var(--border-color);
+				box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+				overflow-y: auto;
+				position: fixed;
+				height: 100vh;
+				z-index: 100;
+				transform: translateX(0);
+				transition: transform 0.3s ease;
+			}
+
+			.sidebar.closed {
+				transform: translateX(-100%);
+			}
+
+			.sidebar-header {
+				padding: 20px;
+				border-bottom: 1px solid var(--border-color);
+				background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+				color: var(--white);
+				position: relative;
+			}
+
+			.close-sidebar-btn {
+				position: absolute;
+				top: 15px;
+				right: 15px;
+				background: none;
+				border: none;
+				color: var(--white);
+				font-size: 20px;
+				cursor: pointer;
+				padding: 5px;
+				border-radius: 4px;
+				transition: background-color 0.2s ease;
+				opacity: 0.8;
+			}
+
+			.close-sidebar-btn:hover {
+				background-color: rgba(255, 255, 255, 0.2);
+				opacity: 1;
+			}
+
+			.logo {
+				font-size: 24px;
+				font-weight: 700;
+				margin-bottom: 8px;
+			}
+
+			.subtitle {
+				font-size: 14px;
+				opacity: 0.9;
+			}
+
+			.stats-section {
+				padding: 20px;
+				border-bottom: 1px solid var(--border-color);
+			}
+
+			.stats-title {
+				font-size: 16px;
+				font-weight: 600;
+				margin-bottom: 15px;
+				color: var(--text-color);
+			}
+
+			.stats-grid {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 10px;
+			}
+
+			.stat-item {
+				text-align: center;
+				padding: 12px 8px;
+				background: var(--light-gray);
+				border-radius: 8px;
+			}
+
+			.stat-number {
+				display: block;
+				font-size: 24px;
+				font-weight: 700;
+				color: var(--primary-color);
+				margin-bottom: 4px;
+			}
+
+			.stat-label {
+				font-size: 12px;
+				color: var(--text-color);
+			}
+
+			.components-section {
+				padding: 20px;
+			}
+
+			.components-title {
+				font-size: 16px;
+				font-weight: 600;
+				margin-bottom: 15px;
+				color: var(--text-color);
+			}
+
+			.component-card {
+				background: var(--white);
+				border: 1px solid var(--border-color);
+				border-radius: 8px;
+				margin-bottom: 12px;
+				overflow: hidden;
+				transition: all 0.2s ease;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+			}
+
+			.component-card:hover {
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+				transform: translateY(-1px);
+			}
+
+			.component-header {
+				padding: 15px;
+				background: linear-gradient(135deg, var(--athens-grey), #e9ecef);
+				border-bottom: 1px solid var(--border-color);
+				cursor: pointer;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+
+			.component-title {
+				font-weight: 600;
+				color: var(--text-color);
+				font-size: 14px;
+			}
+
+			.component-toggle {
+				width: 40px;
+				height: 20px;
+				background: #ccc;
+				border-radius: 10px;
+				position: relative;
+				transition: background 0.2s ease;
+			}
+
+			.component-toggle.active {
+				background: var(--success-color);
+			}
+
+			.component-toggle::after {
+				content: "";
+				position: absolute;
+				width: 16px;
+				height: 16px;
+				border-radius: 50%;
+				background: var(--white);
+				top: 2px;
+				left: 2px;
+				transition: transform 0.2s ease;
+			}
+
+			.component-toggle.active::after {
+				transform: translateX(20px);
+			}
+
+			.component-content {
+				padding: 15px;
+				display: none;
+			}
+
+			.component-content.show {
+				display: block;
+			}
+
+			.component-description {
+				font-size: 13px;
+				color: #666;
+				margin-bottom: 15px;
+				line-height: 1.5;
+			}
+
+			/* Styles pour les dropdowns personnalisés */
+			.custom-dropdown {
+				position: relative;
+				margin-bottom: 15px;
+			}
+
+			.custom-dropdown.compact {
+				margin-bottom: 10px;
+			}
+
+			.dropdown-label {
+				display: block;
+				font-weight: 600;
+				margin-bottom: 5px;
+				color: var(--text-color);
+				font-size: 13px;
+			}
+
+			.dropdown-button {
+				width: 100%;
+				padding: 8px 30px 8px 10px;
+				background: var(--white);
+				border: 1px solid var(--border-color);
+				border-radius: 4px;
+				cursor: pointer;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				font-size: 13px;
+				transition: border-color 0.2s ease;
+				position: relative;
+			}
+
+			.dropdown-button:hover {
+				border-color: var(--primary-color);
+			}
+
+			.dropdown-button::after {
+				content: "▼";
+				font-size: 10px;
+				color: #666;
+				position: absolute;
+				right: 10px;
+				transition: transform 0.2s ease;
+			}
+
+			.dropdown-button.open::after {
+				transform: rotate(180deg);
+			}
+
+			.dropdown-options {
+				position: absolute;
+				top: 100%;
+				left: 0;
+				right: 0;
+				background: var(--white);
+				border: 1px solid var(--border-color);
+				border-top: none;
+				border-radius: 0 0 4px 4px;
+				max-height: 300px;
+				overflow-y: auto;
+				z-index: 1000;
+				display: none;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			}
+
+			.dropdown-options.show {
+				display: block;
+			}
+
+			/* Ajustement pour les dropdowns en bas de card */
+			.custom-dropdown:last-child .dropdown-options {
+				bottom: 100%;
+				top: auto;
+				border-radius: 4px 4px 0 0;
+				border-top: 1px solid var(--border-color);
+				border-bottom: none;
+			}
+
+			.dropdown-option {
+				display: block;
+			}
+
+			.dropdown-option input[type="radio"] {
+				display: none;
+			}
+
+			.dropdown-option label {
+				display: block;
+				padding: 8px 10px;
+				cursor: pointer;
+				font-size: 13px;
+				transition: background-color 0.2s ease;
+				border-bottom: 1px solid #f0f0f0;
+			}
+
+			.dropdown-option label:hover {
+				background-color: #f8f9fa;
+			}
+
+			.dropdown-option input[type="radio"]:checked + label {
+				background-color: var(--primary-color);
+				color: var(--white);
+			}
+
+			.dropdown-option:last-child label {
+				border-bottom: none;
+			}
+
+			/* Zone de contenu principal */
+			.content-area {
+				flex: 1;
+				margin-left: 320px;
+				padding: 30px;
+				min-height: 100vh;
+				transition: margin-left 0.3s ease;
+			}
+
+			.content-area.sidebar-closed {
+				margin-left: 0;
+			}
+
+			.open-sidebar-btn {
+				position: fixed;
+				top: 20px;
+				left: 20px;
+				background: var(--primary-color);
+				border: none;
+				color: var(--white);
+				font-size: 18px;
+				cursor: pointer;
+				padding: 12px;
+				border-radius: 8px;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+				z-index: 50;
+				display: none;
+				transition: all 0.2s ease;
+			}
+
+			.open-sidebar-btn:hover {
+				background: var(--secondary-color);
+				transform: scale(1.05);
+			}
+
+			.open-sidebar-btn.show {
+				display: block;
+			}
+
+			.demo-section {
+				background: var(--white);
+				border-radius: 12px;
+				padding: 30px;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+				margin-bottom: 30px;
+			}
+
+			.demo-title {
+				font-size: 28px;
+				font-weight: 700;
+				color: var(--text-color);
+				margin-bottom: 10px;
+			}
+
+			.demo-subtitle {
+				font-size: 16px;
+				color: #666;
+				margin-bottom: 30px;
+			}
+
+			.demo-content {
+				line-height: 1.8;
+			}
+
+			.demo-content h2 {
+				font-size: 22px;
+				color: var(--primary-color);
+				margin: 25px 0 15px 0;
+				font-weight: 600;
+			}
+
+			.demo-content h3 {
+				font-size: 18px;
+				color: var(--text-color);
+				margin: 20px 0 10px 0;
+				font-weight: 600;
+			}
+
+			.demo-content p {
+				margin-bottom: 15px;
+			}
+
+			.demo-content ul {
+				margin-left: 25px;
+				margin-bottom: 15px;
+			}
+
+			.demo-content li {
+				margin-bottom: 8px;
+			}
+
+			.highlight-box {
+				background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+				border-left: 4px solid var(--primary-color);
+				padding: 20px;
+				margin: 20px 0;
+				border-radius: 0 8px 8px 0;
+			}
+
+			.feature-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+				gap: 20px;
+				margin: 30px 0;
+			}
+
+			.feature-card {
+				background: var(--white);
+				border: 1px solid var(--border-color);
+				border-radius: 8px;
+				padding: 20px;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+			}
+
+			.feature-icon {
+				width: 48px;
+				height: 48px;
+				background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+				border-radius: 12px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin-bottom: 15px;
+				font-size: 24px;
+				color: var(--white);
+			}
+
+			.feature-title {
+				font-size: 18px;
+				font-weight: 600;
+				margin-bottom: 10px;
+				color: var(--text-color);
+			}
+
+			.feature-description {
+				font-size: 14px;
+				color: #666;
+				line-height: 1.6;
+			}
+
+			@media (max-width: 768px) {
+				.sidebar {
+					transform: translateX(-100%);
+					transition: transform 0.3s ease;
+				}
+
+				.sidebar.open {
+					transform: translateX(0);
+				}
+
+				.content-area {
+					margin-left: 0;
+					padding: 20px;
+				}
+
+				.demo-section {
+					padding: 20px;
+				}
+
+				.feature-grid {
+					grid-template-columns: 1fr;
+					gap: 15px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="main-container">
+			<!-- Barre latérale des composants -->
+			<aside class="sidebar">
+				<div class="sidebar-header">
+					<div class="logo">Webcomfort</div>
+					<div class="subtitle">Accessibilité intelligente</div>
+					<button class="close-sidebar-btn" id="closeSidebarBtn" title="Fermer le panneau">✕</button>
+				</div>
+
+				<div class="stats-section">
+					<h3 class="stats-title">Statistiques d'usage</h3>
+					<div class="stats-grid">
+						<div class="stat-item">
+							<span class="stat-number" id="activeComponents">0</span>
+							<span class="stat-label">Actifs</span>
+						</div>
+						<div class="stat-item">
+							<span class="stat-number" id="totalComponents">7</span>
+							<span class="stat-label">Total</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="components-section">
+					<h3 class="components-title">Composants disponibles</h3>
+
+					<!-- Composant Personnalisation du texte -->
+					<div class="component-card">
+						<div class="component-header" data-component="textPersonalization">
+							<span class="component-title">Personnalisation du texte</span>
+							<div class="component-toggle" data-toggle="textPersonalization"></div>
+						</div>
+						<div class="component-content" data-content="textPersonalization">
+							<div class="component-description">
+								Ajustez la taille, la police et l'espacement du texte pour améliorer la lisibilité.
+							</div>
+
+							<!-- Contrôles intégrés -->
+							<div id="personnalisationControls">
+								<div class="custom-dropdown compact">
+									<label class="dropdown-label">Taille de police :</label>
+									<div class="dropdown-button" data-dropdown="fontSize">
+										<span class="dropdown-text">Normal (16px)</span>
+									</div>
+									<div class="dropdown-options">
+										<div class="dropdown-option">
+											<input type="radio" name="fontSize" id="fontSize-12" value="12px" />
+											<label for="fontSize-12">Très petit (12px)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="fontSize" id="fontSize-14" value="14px" />
+											<label for="fontSize-14">Petit (14px)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="fontSize" id="fontSize-16" value="16px" checked />
+											<label for="fontSize-16">Normal (16px)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="fontSize" id="fontSize-18" value="18px" />
+											<label for="fontSize-18">Grand (18px)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="fontSize" id="fontSize-20" value="20px" />
+											<label for="fontSize-20">Très grand (20px)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="fontSize" id="fontSize-24" value="24px" />
+											<label for="fontSize-24">Extra grand (24px)</label>
+										</div>
+									</div>
+								</div>
+
+								<div class="custom-dropdown compact">
+									<label class="dropdown-label">Police de caractères :</label>
+									<div class="dropdown-button" data-dropdown="fontFamily">
+										<span class="dropdown-text">Open Sans</span>
+									</div>
+									<div class="dropdown-options">
+										<div class="dropdown-option">
+											<input type="radio" name="fontFamily" id="font-opensans" value="'Open Sans', sans-serif" checked />
+											<label for="font-opensans">Open Sans</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="fontFamily" id="font-arial" value="Arial, sans-serif" />
+											<label for="font-arial">Arial</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="fontFamily" id="font-helvetica" value="Helvetica, sans-serif" />
+											<label for="font-helvetica">Helvetica</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="fontFamily" id="font-georgia" value="Georgia, serif" />
+											<label for="font-georgia">Georgia</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="fontFamily" id="font-times" value="'Times New Roman', serif" />
+											<label for="font-times">Times New Roman</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="fontFamily" id="font-verdana" value="Verdana, sans-serif" />
+											<label for="font-verdana">Verdana</label>
+										</div>
+									</div>
+								</div>
+
+								<div class="custom-dropdown compact">
+									<label class="dropdown-label">Espacement des lignes :</label>
+									<div class="dropdown-button" data-dropdown="lineHeight">
+										<span class="dropdown-text">Normal (1.6)</span>
+									</div>
+									<div class="dropdown-options">
+										<div class="dropdown-option">
+											<input type="radio" name="lineHeight" id="lineHeight-1.2" value="1.2" />
+											<label for="lineHeight-1.2">Serré (1.2)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="lineHeight" id="lineHeight-1.4" value="1.4" />
+											<label for="lineHeight-1.4">Compact (1.4)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="lineHeight" id="lineHeight-1.6" value="1.6" checked />
+											<label for="lineHeight-1.6">Normal (1.6)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="lineHeight" id="lineHeight-1.8" value="1.8" />
+											<label for="lineHeight-1.8">Aéré (1.8)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="lineHeight" id="lineHeight-2.0" value="2.0" />
+											<label for="lineHeight-2.0">Très aéré (2.0)</label>
+										</div>
+									</div>
+								</div>
+
+								<div class="custom-dropdown compact">
+									<label class="dropdown-label">Espacement des lettres :</label>
+									<div class="dropdown-button" data-dropdown="letterSpacing">
+										<span class="dropdown-text">Normal (0px)</span>
+									</div>
+									<div class="dropdown-options">
+										<div class="dropdown-option">
+											<input type="radio" name="letterSpacing" id="letterSpacing-0" value="0px" checked />
+											<label for="letterSpacing-0">Normal (0px)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="letterSpacing" id="letterSpacing-0.5" value="0.5px" />
+											<label for="letterSpacing-0.5">Léger (0.5px)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="letterSpacing" id="letterSpacing-1" value="1px" />
+											<label for="letterSpacing-1">Modéré (1px)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="letterSpacing" id="letterSpacing-1.5" value="1.5px" />
+											<label for="letterSpacing-1.5">Aéré (1.5px)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="letterSpacing" id="letterSpacing-2" value="2px" />
+											<label for="letterSpacing-2">Très aéré (2px)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="letterSpacing" id="letterSpacing-3" value="3px" />
+											<label for="letterSpacing-3">Extra aéré (3px)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="letterSpacing" id="letterSpacing-5" value="5px" />
+											<label for="letterSpacing-5">Maximum (5px)</label>
+										</div>
+									</div>
+								</div>
+
+								<div class="custom-dropdown compact">
+									<label class="dropdown-label">Espace entre les mots :</label>
+									<div class="dropdown-button" data-dropdown="wordSpacing">
+										<span class="dropdown-text">Normal (0px)</span>
+									</div>
+									<div class="dropdown-options">
+										<div class="dropdown-option">
+											<input type="radio" name="wordSpacing" id="wordSpacing-0" value="0px" checked />
+											<label for="wordSpacing-0">Normal (0px)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="wordSpacing" id="wordSpacing-2" value="2px" />
+											<label for="wordSpacing-2">Léger (2px)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="wordSpacing" id="wordSpacing-4" value="4px" />
+											<label for="wordSpacing-4">Modéré (4px)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="wordSpacing" id="wordSpacing-6" value="6px" />
+											<label for="wordSpacing-6">Aéré (6px)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="wordSpacing" id="wordSpacing-8" value="8px" />
+											<label for="wordSpacing-8">Très aéré (8px)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="wordSpacing" id="wordSpacing-10" value="10px" />
+											<label for="wordSpacing-10">Extra aéré (10px)</label>
+										</div>
+										<div class="dropdown-option">
+											<input type="radio" name="wordSpacing" id="wordSpacing-15" value="15px" />
+											<label for="wordSpacing-15">Maximum (15px)</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Autres composants -->
+					<div class="component-card">
+						<div class="component-header" data-component="dyslexia">
+							<span class="component-title">Police pour dyslexie</span>
+							<div class="component-toggle" data-toggle="dyslexia"></div>
+						</div>
+						<div class="component-content" data-content="dyslexia">
+							<div class="component-description">Active une police spécialement conçue pour les personnes dyslexiques.</div>
+						</div>
+					</div>
+
+					<div class="component-card">
+						<div class="component-header" data-component="epilepsy">
+							<span class="component-title">Protection épilepsie</span>
+							<div class="component-toggle" data-toggle="epilepsy"></div>
+						</div>
+						<div class="component-content" data-content="epilepsy">
+							<div class="component-description">
+								Désactive les animations et effets clignotants pouvant déclencher des crises d'épilepsie.
+							</div>
+						</div>
+					</div>
+
+					<div class="component-card">
+						<div class="component-header" data-component="readingGuide">
+							<span class="component-title">Guide de lecture</span>
+							<div class="component-toggle" data-toggle="readingGuide"></div>
+						</div>
+						<div class="component-content" data-content="readingGuide">
+							<div class="component-description">Ajoute une ligne de suivi pour faciliter la lecture ligne par ligne.</div>
+						</div>
+					</div>
+
+					<div class="component-card">
+						<div class="component-header" data-component="darkMode">
+							<span class="component-title">Mode sombre</span>
+							<div class="component-toggle" data-toggle="darkMode"></div>
+						</div>
+						<div class="component-content" data-content="darkMode">
+							<div class="component-description">
+								Inverse les couleurs pour réduire la fatigue oculaire dans les environnements sombres.
+							</div>
+						</div>
+					</div>
+
+					<div class="component-card">
+						<div class="component-header" data-component="magnifier">
+							<span class="component-title">Loupe</span>
+							<div class="component-toggle" data-toggle="magnifier"></div>
+						</div>
+						<div class="component-content" data-content="magnifier">
+							<div class="component-description">Ajoute une loupe qui suit le curseur pour agrandir le contenu.</div>
+						</div>
+					</div>
+
+					<div class="component-card">
+						<div class="component-header" data-component="letterSpacing">
+							<span class="component-title">Espacement des lettres</span>
+							<div class="component-toggle" data-toggle="letterSpacing"></div>
+						</div>
+						<div class="component-content" data-content="letterSpacing">
+							<div class="component-description">Augmente l'espacement entre les lettres et les mots pour améliorer la lisibilité.</div>
+						</div>
+					</div>
+				</div>
+			</aside>
+
+			<!-- Bouton pour rouvrir la sidebar -->
+			<button class="open-sidebar-btn" id="openSidebarBtn" title="Ouvrir le panneau d'accessibilité">☰</button>
+
+			<!-- Zone de contenu principal -->
+			<main class="content-area">
+				<section class="demo-section">
+					<h1 class="demo-title">Webcomfort - Démonstration</h1>
+					<p class="demo-subtitle">
+						Cette page démontre les capacités d'accessibilité de Webcomfort avec du contenu réel que vous pouvez modifier en temps réel.
+					</p>
+
+					<div class="demo-content">
+						<h2>Qu'est-ce que l'accessibilité web ?</h2>
+						<p>
+							L'accessibilité web consiste à rendre les sites internet utilisables par tous, y compris les personnes en situation de
+							handicap. Cela inclut les personnes ayant des difficultés visuelles, auditives, motrices ou cognitives.
+						</p>
+
+						<div class="highlight-box">
+							<strong>Le saviez-vous ?</strong> Environ 15% de la population mondiale vit avec une forme de handicap. Rendre votre site
+							accessible, c'est l'ouvrir à plus d'un milliard de personnes !
+						</div>
+
+						<h3>Pourquoi l'accessibilité est-elle importante ?</h3>
+						<ul>
+							<li><strong>Inclusion sociale :</strong> Permet à chacun de participer pleinement à la société numérique</li>
+							<li><strong>Obligation légale :</strong> De nombreux pays ont des lois sur l'accessibilité numérique</li>
+							<li><strong>Avantage commercial :</strong> Élargit votre audience et améliore l'expérience de tous</li>
+							<li><strong>Innovation :</strong> Les solutions d'accessibilité profitent souvent à tous les utilisateurs</li>
+						</ul>
+
+						<h3>Les principaux défis d'accessibilité</h3>
+						<p>Les personnes en situation de handicap peuvent rencontrer diverses barrières lors de la navigation web :</p>
+						<ul>
+							<li>Texte trop petit ou contrastes insuffisants</li>
+							<li>Navigation impossible au clavier</li>
+							<li>Contenus multimédia sans alternatives textuelles</li>
+							<li>Interfaces complexes ou non intuitives</li>
+							<li>Animations ou effets pouvant déclencher des crises</li>
+						</ul>
+
+						<div class="feature-grid">
+							<div class="feature-card">
+								<div class="feature-icon">👁️</div>
+								<div class="feature-title">Déficience visuelle</div>
+								<div class="feature-description">
+									Cécité, malvoyance, daltonisme... Nos outils adaptent l'affichage pour une meilleure perception visuelle.
+								</div>
+							</div>
+
+							<div class="feature-card">
+								<div class="feature-icon">🧠</div>
+								<div class="feature-title">Troubles cognitifs</div>
+								<div class="feature-description">
+									Dyslexie, TDAH, autisme... Interface simplifiée et personnalisable pour faciliter la concentration.
+								</div>
+							</div>
+
+							<div class="feature-card">
+								<div class="feature-icon">✋</div>
+								<div class="feature-title">Déficience motrice</div>
+								<div class="feature-description">
+									Navigation au clavier, commandes vocales, zones de clic élargies pour une utilisation adaptée.
+								</div>
+							</div>
+
+							<div class="feature-card">
+								<div class="feature-icon">⚡</div>
+								<div class="feature-title">Épilepsie</div>
+								<div class="feature-description">
+									Protection contre les animations et effets lumineux susceptibles de déclencher des crises.
+								</div>
+							</div>
+						</div>
+
+						<h2>Comment Webcomfort peut vous aider</h2>
+						<p>
+							Webcomfort propose une suite d'outils d'accessibilité que vous pouvez tester en temps réel sur cette page. Utilisez les
+							contrôles de la barre latérale pour voir immédiatement l'impact des différents ajustements.
+						</p>
+
+						<p>
+							Chaque modification que vous apportez est immédiatement visible, vous permettant de comprendre comment ces fonctionnalités
+							peuvent améliorer l'expérience de navigation pour différents utilisateurs.
+						</p>
+					</div>
+				</section>
+			</main>
+		</div>
+
+		<script>
+			// JavaScript pour l'interface de démonstration
+			class AccessibilityPanel {
+				constructor() {
+					this.components = new Map();
+					this.sidebarOpen = true;
+					this.initializeComponents();
+					this.bindEvents();
+					this.updateStats();
+					this.initializeDropdowns();
+					this.bindSidebarEvents();
+				}
+
+				initializeComponents() {
+					// Initialise tous les composants comme inactifs
+					const componentNames = ["textPersonalization", "dyslexia", "epilepsy", "readingGuide", "darkMode", "magnifier", "letterSpacing"];
+
+					componentNames.forEach((name) => {
+						this.components.set(name, false);
+					});
+				}
+
+				bindEvents() {
+					// Événements pour les en-têtes de composants (toggle)
+					document.querySelectorAll(".component-header").forEach((header) => {
+						header.addEventListener("click", (e) => {
+							const component = header.getAttribute("data-component");
+							const content = document.querySelector(`[data-content="${component}"]`);
+							const toggle = document.querySelector(`[data-toggle="${component}"]`);
+
+							// Toggle du contenu
+							content.classList.toggle("show");
+
+							// Toggle de l'état du composant
+							const isActive = !this.components.get(component);
+							this.components.set(component, isActive);
+
+							// Mise à jour de l'affichage du toggle
+							if (isActive) {
+								toggle.classList.add("active");
+							} else {
+								toggle.classList.remove("active");
+							}
+
+							this.updateStats();
+							this.applyComponentEffect(component, isActive);
+						});
+					});
+				}
+
+				initializeDropdowns() {
+					// Événements pour les dropdowns personnalisés
+					document.querySelectorAll(".dropdown-button").forEach((button) => {
+						button.addEventListener("click", (e) => {
+							e.stopPropagation();
+							const dropdown = button.getAttribute("data-dropdown");
+							const options = button.nextElementSibling;
+
+							// Fermer tous les autres dropdowns
+							document.querySelectorAll(".dropdown-options.show").forEach((otherOptions) => {
+								if (otherOptions !== options) {
+									otherOptions.classList.remove("show");
+									otherOptions.previousElementSibling.classList.remove("open");
+								}
+							});
+
+							// Toggle du dropdown courant
+							options.classList.toggle("show");
+							button.classList.toggle("open");
+						});
+					});
+
+					// Événements pour les options de dropdown
+					document.querySelectorAll('.dropdown-option input[type="radio"]').forEach((radio) => {
+						radio.addEventListener("change", (e) => {
+							const dropdown = e.target.name;
+							const value = e.target.value;
+							const label = e.target.nextElementSibling.textContent;
+
+							// Mettre à jour le texte du bouton
+							const button = document.querySelector(`[data-dropdown="${dropdown}"]`);
+							const textSpan = button.querySelector(".dropdown-text");
+							textSpan.textContent = label;
+
+							// Fermer le dropdown
+							const options = button.nextElementSibling;
+							options.classList.remove("show");
+							button.classList.remove("open");
+
+							// Appliquer les changements
+							this.applyTextPersonalization(dropdown, value);
+						});
+					});
+
+					// Fermer les dropdowns en cliquant ailleurs
+					document.addEventListener("click", (e) => {
+						if (!e.target.closest(".custom-dropdown")) {
+							document.querySelectorAll(".dropdown-options.show").forEach((options) => {
+								options.classList.remove("show");
+								options.previousElementSibling.classList.remove("open");
+							});
+						}
+					});
+				}
+
+				applyTextPersonalization(property, value) {
+					const contentArea = document.querySelector(".content-area");
+					if (!contentArea) return;
+
+					switch (property) {
+						case "fontSize":
+							contentArea.style.fontSize = value;
+							break;
+						case "fontFamily":
+							contentArea.style.fontFamily = value;
+							break;
+						case "lineHeight":
+							contentArea.style.lineHeight = value;
+							break;
+						case "letterSpacing":
+							contentArea.style.letterSpacing = value;
+							break;
+						case "wordSpacing":
+							contentArea.style.wordSpacing = value;
+							break;
+					}
+				}
+
+				applyComponentEffect(component, isActive) {
+					const body = document.body;
+					const contentArea = document.querySelector(".content-area");
+
+					switch (component) {
+						case "textPersonalization":
+							// Les changements sont gérés par les dropdowns individuels
+							break;
+
+						case "dyslexia":
+							if (isActive) {
+								contentArea.style.fontFamily = "OpenDyslexic, Arial, sans-serif";
+							} else {
+								contentArea.style.fontFamily = "";
+							}
+							break;
+
+						case "epilepsy":
+							if (isActive) {
+								body.style.animation = "none";
+								body.style.transition = "none";
+							} else {
+								body.style.animation = "";
+								body.style.transition = "";
+							}
+							break;
+
+						case "readingGuide":
+							// Implémentation du guide de lecture
+							break;
+
+						case "darkMode":
+							if (isActive) {
+								body.style.filter = "invert(1) hue-rotate(180deg)";
+							} else {
+								body.style.filter = "";
+							}
+							break;
+
+						case "magnifier":
+							// Implémentation de la loupe
+							break;
+
+						case "letterSpacing":
+							if (isActive) {
+								contentArea.style.letterSpacing = "0.1em";
+								contentArea.style.wordSpacing = "0.2em";
+							} else {
+								contentArea.style.letterSpacing = "";
+								contentArea.style.wordSpacing = "";
+							}
+							break;
+					}
+				}
+
+				bindSidebarEvents() {
+					const closeSidebarBtn = document.getElementById("closeSidebarBtn");
+					const openSidebarBtn = document.getElementById("openSidebarBtn");
+
+					closeSidebarBtn.addEventListener("click", () => {
+						this.closeSidebar();
+					});
+
+					openSidebarBtn.addEventListener("click", () => {
+						this.openSidebar();
+					});
+				}
+
+				closeSidebar() {
+					const sidebar = document.querySelector(".sidebar");
+					const contentArea = document.querySelector(".content-area");
+					const openBtn = document.getElementById("openSidebarBtn");
+
+					sidebar.classList.add("closed");
+					contentArea.classList.add("sidebar-closed");
+					openBtn.classList.add("show");
+					this.sidebarOpen = false;
+				}
+
+				openSidebar() {
+					const sidebar = document.querySelector(".sidebar");
+					const contentArea = document.querySelector(".content-area");
+					const openBtn = document.getElementById("openSidebarBtn");
+
+					sidebar.classList.remove("closed");
+					contentArea.classList.remove("sidebar-closed");
+					openBtn.classList.remove("show");
+					this.sidebarOpen = true;
+				}
+
+				updateStats() {
+					const activeCount = Array.from(this.components.values()).filter((active) => active).length;
+					document.getElementById("activeComponents").textContent = activeCount;
+				}
+			}
+
+			// Initialisation de l'application
+			document.addEventListener("DOMContentLoaded", () => {
+				new AccessibilityPanel();
+			});
+		</script>
+	</body>
+</html>
