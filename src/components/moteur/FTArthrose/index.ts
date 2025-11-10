@@ -1,28 +1,38 @@
-import template from "./template/index.html";
+import { template } from "./template/index.html";
 import { disableArthrose, enableArthrose } from "./service/index";
 import { FTWebconfortBaseComponent } from "../../abscomp/abscomp";
+import { FTArthroseStructure } from "./service/structure"; 
+
 
 /** Configuration for the Arthrose component */
 export class FTArthroseConfig {
-  name = "Arthrose";
-  active: boolean = true;
+    readonly name = "Arthrose";
+    active = false;
+    readonly description = "Enlarge clickable zones for easier interaction";
+    readonly template = template;
 }
 
 /** Arthrose component extending the plain TypeScript base */
 export class FTArthrose extends FTWebconfortBaseComponent<FTArthroseConfig> {
+   private readonly ftArthroseStructure: FTArthroseStructure;
   constructor(container: HTMLElement) {
-    super("Arthrose", template, new FTArthroseConfig(), container);
+    super(container, new FTArthroseConfig());
+       this.ftArthroseStructure = new FTArthroseStructure(container);
     console.log("FTArthrose module initialized");
   }
 
   protected override onActivate(): void {
     console.log("on activate ==> Arthrose activated - enlarging clickable zones");
-    enableArthrose();
+    super.onActivate();
+    this.config.active = true;
+    this.ftArthroseStructure.enableArthrose(true);
   }
 
   protected override onDeactivate(): void {
     console.log("on deactivate ==> Arthrose deactivated - restoring normal zones");
-    disableArthrose();
+    super.onDeactivate();
+    this.config.active = true;
+    this.ftArthroseStructure.enableArthrose(false);
   }
 
   protected override updateText(): void {

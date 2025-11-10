@@ -4,9 +4,9 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Webcomfort - Accessibilité Web</title>
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<!-- <link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet" />
+		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet" /> -->
 		<style>
 			:root {
 				--primary-color: #333367;
@@ -505,7 +505,7 @@
 			<aside class="sidebar">
 				<div class="sidebar-header">
 					<div class="logo">Webcomfort</div>
-					<div class="subtitle">Accessibilité intelligente</div>
+					<div class="subtitle">Accessibilité intelligente visuelle</div>
 					<button class="close-sidebar-btn" id="closeSidebarBtn" title="Fermer le panneau">✕</button>
 				</div>
 
@@ -874,11 +874,20 @@
 				constructor() {
 					this.components = new Map();
 					this.sidebarOpen = true;
+					this.textSettings = {
+						fontSize: "16px",
+						fontFamily: "'Open Sans', sans-serif",
+						lineHeight: "1.6",
+						letterSpacing: "0px",
+						wordSpacing: "0px",
+					};
+					this.loadSettings();
 					this.initializeComponents();
 					this.bindEvents();
 					this.updateStats();
 					this.initializeDropdowns();
 					this.bindSidebarEvents();
+					this.applySavedSettings();
 				}
 
 				initializeComponents() {
@@ -888,6 +897,94 @@
 					componentNames.forEach((name) => {
 						this.components.set(name, false);
 					});
+				}
+
+				loadSettings() {
+					try {
+						// Charger les états des composants
+						const savedComponents = localStorage.getItem("webcomfort-components");
+						if (savedComponents) {
+							const componentData = JSON.parse(savedComponents);
+							Object.entries(componentData).forEach(([name, isActive]) => {
+								this.components.set(name, isActive);
+							});
+						}
+
+						// Charger les paramètres de texte
+						const savedTextSettings = localStorage.getItem("webcomfort-text-settings");
+						if (savedTextSettings) {
+							this.textSettings = { ...this.textSettings, ...JSON.parse(savedTextSettings) };
+						}
+
+						// Charger l'état de la sidebar
+						const savedSidebarState = localStorage.getItem("webcomfort-sidebar-open");
+						if (savedSidebarState !== null) {
+							this.sidebarOpen = JSON.parse(savedSidebarState);
+						}
+					} catch (error) {
+						console.warn("Error loading settings from localStorage:", error);
+					}
+				}
+
+				saveSettings() {
+					try {
+						// Sauvegarder les états des composants
+						const componentData = {};
+						this.components.forEach((isActive, name) => {
+							componentData[name] = isActive;
+						});
+						localStorage.setItem("webcomfort-components", JSON.stringify(componentData));
+
+						// Sauvegarder les paramètres de texte
+						localStorage.setItem("webcomfort-text-settings", JSON.stringify(this.textSettings));
+
+						// Sauvegarder l'état de la sidebar
+						localStorage.setItem("webcomfort-sidebar-open", JSON.stringify(this.sidebarOpen));
+					} catch (error) {
+						console.warn("Error saving settings to localStorage:", error);
+					}
+				}
+
+				applySavedSettings() {
+					// Appliquer les paramètres de texte sauvegardés
+					Object.entries(this.textSettings).forEach(([property, value]) => {
+						this.applyTextPersonalization(property, value);
+						this.updateDropdownDisplay(property, value);
+					});
+
+					// Appliquer les états des composants
+					this.components.forEach((isActive, component) => {
+						if (isActive) {
+							const toggle = document.querySelector(`[data-toggle="${component}"]`);
+							const content = document.querySelector(`[data-content="${component}"]`);
+
+							if (toggle && content) {
+								toggle.classList.add("active");
+								content.classList.add("show");
+								this.applyComponentEffect(component, true);
+							}
+						}
+					});
+
+					// Appliquer l'état de la sidebar
+					if (!this.sidebarOpen) {
+						setTimeout(() => this.closeSidebar(), 100);
+					}
+				}
+
+				updateDropdownDisplay(property, value) {
+					const button = document.querySelector(`[data-dropdown="${property}"]`);
+					if (button) {
+						const radio = document.querySelector(`input[name="${property}"][value="${value}"]`);
+						if (radio) {
+							radio.checked = true;
+							const label = radio.nextElementSibling.textContent;
+							const textSpan = button.querySelector(".dropdown-text");
+							if (textSpan) {
+								textSpan.textContent = label;
+							}
+						}
+					}
 				}
 
 				bindEvents() {
@@ -914,6 +1011,7 @@
 
 							this.updateStats();
 							this.applyComponentEffect(component, isActive);
+							this.saveSettings();
 						});
 					});
 				}
@@ -959,6 +1057,10 @@
 
 							// Appliquer les changements
 							this.applyTextPersonalization(dropdown, value);
+
+							// Sauvegarder les paramètres de texte
+							this.textSettings[dropdown] = value;
+							this.saveSettings();
 						});
 					});
 
@@ -1073,6 +1175,7 @@
 					contentArea.classList.add("sidebar-closed");
 					openBtn.classList.add("show");
 					this.sidebarOpen = false;
+					this.saveSettings();
 				}
 
 				openSidebar() {
@@ -1084,6 +1187,17 @@
 					contentArea.classList.remove("sidebar-closed");
 					openBtn.classList.remove("show");
 					this.sidebarOpen = true;
+					this.saveSettings();
+				}
+
+				resetSettings() {
+					// Effacer localStorage
+					localStorage.removeItem("webcomfort-components");
+					localStorage.removeItem("webcomfort-text-settings");
+					localStorage.removeItem("webcomfort-sidebar-open");
+
+					// Recharger la page pour appliquer les paramètres par défaut
+					window.location.reload();
 				}
 
 				updateStats() {

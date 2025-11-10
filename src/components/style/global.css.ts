@@ -1,119 +1,61 @@
 export default /*css*/ `
-.container {
-    padding: 12px;
-    border: 0.3px solid #ddd;
-    border-radius: 8px;
-    background: #f9f9f9;
-    font-family: system-ui;
-    font-synthesis-weight: inherit;
-    max-width: 270px;
-}
+      
 
-.container h3 {
-    margin: 0 0 15px 0;
-    color: #333;
-    text-align: center;
-}
-.comp-container{
-   display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-}
-.controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 20px;
-}
+ .component-title {
+      font-weight: 600;
+      color: var(--text-color);
+      font-size: 14px;
+    }
+    .component-toggle {
+      width: 40px;
+      height: 20px;
+      background: #ccc;
+      border-radius: 10px;
+      position: relative;
+      transition: background 0.2s ease;
+    }
 
-.control-btn {
-    width: 40px;
-    height: 40px;
-    border: none;
-    background: #007bff;
-    color: white;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: bold;
-    transition: all 0.2s ease;
-}
+    .component-toggle.active {
+      background: var(--success-color);
+    }
 
-.control-btn:hover {
-    background: #0056b3;
-    transform: scale(1.1);
-}
+    .component-toggle::after {
+      content: "";
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--white);
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s ease;
+    }
 
-.label {
-    font-weight: bold;
-    color: #555;
-}
+    .component-toggle.active::after {
+      transform: translateX(20px);
+    }
+    
+        .component-content {
+      padding: 15px;
+      display: none;
+    }
 
-.toggle-container {
-    margin-bottom: 15px;
-}
+    .component-content.show {
+      display: block;
+    }
 
-.toggle-btn {
+    .component-description {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
  
-    width: 42px;
-    height: 21px;
-    border: 2px solid #ddd;
-    border-radius: 25px;
-    background: #fff;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    margin: 0;
-}
-
-.toggle-btn.active {
-    background: #4cb2e5ff;
-    border-color: #4cb2e5ff;
-}
-
-.toggle-btn.inactive {
-        background: #c3b4b6;
-    border-color: #c3b4b6;
-}
-
-.toggle-indicator {
-    width: 17px;
-    height: 17px;
-    border-radius: 46%;
-    background: white;
-    position: absolute;
-    top: 0px;
-    left: 4px;
-    transition: left 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
- 
-}
-
-.toggle-btn.active .toggle-indicator {
-    left: 21px; /* Move to right side when active */
-}
-
-.toggle-btn.inactive .toggle-indicator {
-    left: 0px; /* Stay on left side when inactive */
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); opacity: 0.8; }
-    50% { transform: scale(1.2); opacity: 1; }
-    100% { transform: scale(1); opacity: 0.8; }
-}
-
-.status {
-    text-align: center;
-    padding: 10px;
-    background: #e9ecef;
-    border-radius: 5px;
-    font-weight: bold;
-}
-
-#statusText {
-    color: #495057;
-}
+   .content-area {
+      flex: 1;
+      margin-left: 320px;
+      padding: 30px;
+      min-height: 100vh;
+      transition: margin-left 0.3s ease;
+    }
 `;

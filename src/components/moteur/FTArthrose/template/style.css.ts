@@ -108,3 +108,5 @@ export const arthroseCSS = `
     transform: scale(var(--arthrose-hover-scale, 1.02)) !important;
   }
 `;
+
+

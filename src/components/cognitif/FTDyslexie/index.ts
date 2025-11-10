@@ -4,8 +4,11 @@ import { FTWebconfortBaseComponent } from "../../abscomp/abscomp";
 
 /** Configuration for Dyslexie component */
 export class FTDysConfig {
-  name = "Dyslexie";
-  active: boolean = true;
+ 
+   readonly name = "Dyslexie";
+    active = false;
+    readonly description = "Enable dyslexie-friendly fonts to improve readability.";
+    readonly template = template;
 }
 
 /** Dyslexie component as a plain TypeScript module */
@@ -14,7 +17,7 @@ export class FTDyslexie extends FTWebconfortBaseComponent<FTDysConfig> {
   private $fontSelect?: HTMLSelectElement | null;
 
   constructor(container: HTMLElement) {
-    super("Dyslexie", template, new FTDysConfig(), container);
+    super( container, new FTDysConfig() );
     console.log("FTDyslexie component initialized");
 
     // Initialize dropdown container
@@ -23,11 +26,15 @@ export class FTDyslexie extends FTWebconfortBaseComponent<FTDysConfig> {
 
   protected override onActivate(): void {
     console.log("on activate ==> Dyslexie activated, showing dropdown");
+     super.onActivate();
+    this.config.active = true;
     this.showDropdown();
   }
 
   protected override onDeactivate(): void {
     console.log("on deactivate ==> Dyslexie deactivated, hiding dropdown");
+     super.onDeactivate();
+    this.config.active = false;
     this.hideDropdown();
     disableFontDys();
   }

@@ -3,7 +3,9 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>TypeScript Web Components App</title>
-		<!-- <link rel="stylesheet" href="https://cdn-t.ft-qvr.fr/studio/design-system/css/styles.css"> -->
+		<link rel="stylesheet" href="https://cdn-t.ft-qvr.fr/studio/design-system/css/styles.css" />
+		<link rel="stylesheet" href="./src/style.css" />
+
 		<style>
 			#box {
 				width: 100px;
@@ -24,37 +26,72 @@
 				}
 			}
 			.zone {
-            width: 150px;
-            height: 50px;
-            background-color: #4CAF50;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border-radius: 10px;
-            transition: background-color 0.3s;
-            text-align: center;
-			padding: 5px;
-        }
-        .zone:hover {
-            background-color: #45a049;
-        }
+				width: 150px;
+				height: 50px;
+				background-color: #4caf50;
+				color: white;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+				border-radius: 10px;
+				transition: background-color 0.3s;
+				text-align: center;
+				padding: 5px;
+			}
+			.zone:hover {
+				background-color: #45a049;
+			}
 		</style>
 	</head>
+
 	<body>
-		    <div class="zone" onclick="alert('Zone 1 clicked')">Zone 1</div>
-    <div class="zone" onclick="alert('Zone 2 clicked')">Zone 2</div>
-    <div class="zone" onclick="alert('Zone 3 clicked')">Zone 3</div>
-    <div class="zone" onclick="alert('Zone 4 clicked')">Zone 4</div>
-	<input type="text" aria-label="enter some thing">
-	<label>
-      <input type="radio" name="color" value="red">
-      Red
-    </label>
- 
+		<!-- <div class="zone" onclick="alert('Zone 1 clicked')">Zone 1</div>
+		<div class="zone" onclick="alert('Zone 2 clicked')">Zone 2</div>
+		<div class="zone" onclick="alert('Zone 3 clicked')">Zone 3</div>
+		<div class="zone" onclick="alert('Zone 4 clicked')">Zone 4</div>
+		<input type="text" aria-label="enter some thing" />
+		<label>
+			<input type="radio" name="color" value="red" />
+			Red
+		</label>
+
 		<div id="box"></div>
 		<main-app></main-app>
 		<img src="animation.gif" alt="animation" style="width: 300px; height: 300px" />
-		<script type="module" src="./src/app.ts"></script>
+		<script type="module" src="./src/app.ts"></script> -->
+
+		<div class="main-container">
+			<!-- Barre latérale des composants -->
+			<aside class="sidebar">
+				<div class="sidebar-header">
+					<div class="logo">Webcomfort</div>
+					<div class="subtitle">Accessibilité intelligente visuelle</div>
+					<button class="close-sidebar-btn" id="closeSidebarBtn" title="Fermer le panneau">✕</button>
+				</div>
+
+				<div class="stats-section">
+					<h3 class="stats-title">Statistiques d'usage</h3>
+					<div class="stats-grid">
+						<div class="stat-item">
+							<span class="stat-number" id="activeComponents">0</span>
+							<span class="stat-label">Actifs</span>
+						</div>
+						<div class="stat-item">
+							<span class="stat-number" id="totalComponents">7</span>
+							<span class="stat-label">Total</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="components-section">
+					<h3 class="components-title">Composants disponibles</h3>
+					<main-app></main-app>
+				</div>
+			</aside>
+		</div>
+		<!-- <script type="module" src="./dist/script.js"></script> -->
+
+		<script type="module" src="/src/app.ts"></script>
+	</body>
 </html>

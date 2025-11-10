@@ -7,12 +7,7 @@
 6 silly config load:file:C:\Program Files\nodejs\etc\npmrc
 7 verbose title npm run dev
 8 verbose argv "run" "dev"
-9 verbose logfile logs-max:10 dir:D:\FTWebcomfort\FTWebcomfort\.npm-cache\_logs\2025-11-07T14_36_16_654Z-
-10 verbose logfile D:\FTWebcomfort\FTWebcomfort\.npm-cache\_logs\2025-11-07T14_36_16_654Z-debug-0.log
-11 silly logfile done cleaning log files
-12 verbose cwd D:\FTWebcomfort\FTWebcomfort
-13 verbose os Windows_NT 10.0.19045
-14 verbose node v22.13.0
-15 verbose npm  v10.9.2
-16 verbose exit 2
-17 verbose code 2
+9 verbose logfile logs-max:10 dir:D:\FTWebcomfort\FTWebcomfort\.npm-cache\_logs\2025-11-09T17_18_25_044Z-
+10 verbose logfile D:\FTWebcomfort\FTWebcomfort\.npm-cache\_logs\2025-11-09T17_18_25_044Z-debug-0.log
+11 silly logfile start cleaning logs, removing 1 files
+12 silly logfile done cleaning log files

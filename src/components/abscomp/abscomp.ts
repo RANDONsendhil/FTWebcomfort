@@ -1,68 +1,117 @@
 import { createGlobalTemplate } from "../style/globalIndex.html";
 
 /**
- * Base class for components with toggle functionality and text update
- * @template T Config type for the component
+ * Base class for web components with toggle functionality and text updates.
+ * @template T - Configuration type for the component.
  */
-export class FTWebconfortBaseComponent<T> {
-  protected config: T;
-  protected $btnToggle?: HTMLButtonElement | null;
-  protected $textStatus?: HTMLSpanElement | null;
-  protected $componentName?: HTMLHeadingElement | null;
-  protected $container: HTMLElement;
+export abstract class FTWebconfortBaseComponent<
+  T extends { name: string; description: string; template: string }
+> {
+  protected readonly config: T;
+  protected readonly $container: HTMLElement;
+  protected $btnToggle: HTMLButtonElement | null = null;
+  protected $textStatus: HTMLSpanElement | null = null;
+  protected $componentContent: HTMLElement | null = null;
 
-  constructor(componentName: string, template: string, config: T, container: HTMLElement) {
-    this.config = config;
+  constructor(container: HTMLElement, config: T) {
     this.$container = container;
+    this.config = config;
 
-    // Inject HTML structure into the container
-    this.$container.innerHTML = createGlobalTemplate(componentName, template);
-
-    // Initialize DOM references
-    this.$btnToggle = this.$container.querySelector(".toggle-btn");
-    this.$textStatus = this.$container.querySelector("#statusText");
-    this.$componentName = this.$container.querySelector("#componentName");
-
-    // Bind toggle button
-    this.$btnToggle?.addEventListener("click", () => this.handleToggle());
+    //  Initialize the component structure
+    this.initializeTemplate();
+    this.bindElements();
+    this.registerEvents();
   }
 
-  /** Toggle button click handler */
-  private handleToggle() {
-    if (this.active) {
-      this.deactivate();
-    } else {
-      this.activate();
-    }
+  /** Injects the component HTML structure into the container */
+  private initializeTemplate(): void {
+    this.$container.innerHTML = createGlobalTemplate(
+      this.config.name,
+      this.config.template,
+      this.config.description
+    );
   }
 
-  /** Activate the component */
-  protected activate() {
-    this.$btnToggle?.classList.remove("inactive");
-    this.$btnToggle?.classList.add("active");
+  /** Binds essential DOM elements */
+  private bindElements(): void {
+    this.$componentContent = this.$container.querySelector<HTMLElement>(".component-content");
+    this.$btnToggle = this.$container.querySelector<HTMLButtonElement>(".component-toggle");
+    this.$textStatus = this.$container.querySelector<HTMLSpanElement>(".component-status");
+  }
+
+  /** Registers DOM event listeners */
+  private registerEvents(): void {
+    this.$btnToggle?.addEventListener("click", () => this.toggle());
+  }
+
+  /** Handles toggle button click */
+  private toggle(): void {
+    this.active ? this.deactivate() : this.activate();
+  }
+
+  /** Activates the component */
+  protected activate(): void {
+    this.updateToggleState(true);
     this.onActivate();
     this.updateText();
   }
 
-  /** Deactivate the component */
-  protected deactivate() {
-    this.$btnToggle?.classList.remove("active");
-    this.$btnToggle?.classList.add("inactive");
+  /** Deactivates the component */
+  protected deactivate(): void {
+    this.updateToggleState(false);
     this.onDeactivate();
     this.updateText();
   }
 
-  /** Override in child to implement custom activation behavior */
-  protected onActivate(): void {}
+  /** Updates the toggle button's visual state */
+  private updateToggleState(isActive: boolean): void {
+    if (!this.$btnToggle) return;
 
-  /** Override in child to implement custom deactivation behavior */
-  protected onDeactivate(): void {}
+    this.$btnToggle.classList.toggle("active", isActive);
+    this.$btnToggle.classList.toggle("inactive", !isActive);
+  }
 
-  /** Override in child to implement text update */
-  protected updateText(): void {}
 
-  /** Returns whether the component is active */
+  /** Indicates whether the component is currently active */
   get active(): boolean {
     return this.$btnToggle?.classList.contains("active") ?? false;
+  }
+
+  /** Called when the component is activated (override in child classes) */
+  protected onActivate(): void {
+    this.showComponentContent(true);
+  }
+
+  /** Called when the component is deactivated (override in child classes) */
+  protected onDeactivate(): void {
+    this.showComponentContent(false);
+  }
+
+  /** Called to update displayed text or status (override in child classes) */
+  protected updateText(): void {}
+
+  /** 
+   * Shows/hides component content - can be overridden in child classes
+   * Child classes should call super.showComponentContent(show) to maintain base functionality
+   */
+  protected showComponentContent(show: boolean): void {
+    console.log("Base showComponentContent called with:", show);
+    this.baseShowComponentContent(show);
+  }
+
+  /** 
+   * Core implementation for showing/hiding content - can be called from child classes
+   * Contains the base DOM manipulation logic that child classes can use
+   */
+  protected baseShowComponentContent(show: boolean): void {
+    if (!this.$componentContent) return;
+    
+    // Toggle the content visibility
+    this.$componentContent.classList.toggle("show", show);
+    
+    // Also update the toggle button state if needed
+    if (this.$btnToggle) {
+      this.$btnToggle.classList.toggle("active", show);
+    }
   }
 }

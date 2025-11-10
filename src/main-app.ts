@@ -1,3 +1,11 @@
+const innerHTML = ``
+
+declare global {
+  interface Window {
+    loadModules?: (shadow: ShadowRoot) => void;
+  }
+}
+
 export class MainApp extends HTMLElement {
   private shadow: ShadowRoot;
 
@@ -9,7 +17,10 @@ export class MainApp extends HTMLElement {
 
     // Inject main HTML structure
     this.shadow.innerHTML = `
-      <h2>Main App Component</h2>
+ 
+      <div style="padding: 2px;">
+        <div id="personnalisationTexteContainer"></div>
+      </div>
       <div style="padding: 2px;">
         <div id="epilepsieContainer"></div>
       </div>
@@ -19,13 +30,26 @@ export class MainApp extends HTMLElement {
       <div style="padding: 2px;">
         <div id="arthroseContainer"></div>
       </div>
+       
     `;
   }
 
   connectedCallback() {
-    // Load modules from app.ts
+    console.log("MainApp connected to DOM");
+    console.log("Shadow DOM contents:", this.shadow.innerHTML);
+    
+    // Wait for loadModules to be available and then load modules
+    this.waitForLoadModules();
+  }
+
+  private waitForLoadModules() {
     if (window.loadModules) {
+      console.log("loadModules function found, calling it...");
       window.loadModules(this.shadow);
+    } else {
+      console.warn("window.loadModules not found - retrying in 100ms...");
+      // Retry after a short delay
+      setTimeout(() => this.waitForLoadModules(), 100);
     }
   }
 }
