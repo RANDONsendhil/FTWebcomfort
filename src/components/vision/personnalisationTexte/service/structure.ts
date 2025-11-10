@@ -39,7 +39,10 @@ export class FTPersonalisationTextStructure {
     return this.container || null;
   }
 
-  /** Enable personalization and apply settings */
+  /**
+   * Enable or disable text personalization
+   * @param enable - Whether to enable personalization
+   */
   public enablePersonalisation(enable: boolean): void {
     this.active = enable;
     console.log("Service: Personalization", enable ? "enabled" : "disabled");
@@ -51,7 +54,9 @@ export class FTPersonalisationTextStructure {
     }
   }
 
-  /** Disable personalization */
+  /**
+   * Disable text personalization (convenience method)
+   */
   public disablePersonalisation(): void {
     this.enablePersonalisation(false);
   }
@@ -66,15 +71,20 @@ export class FTPersonalisationTextStructure {
   }
 
 
+  /**
+   * Load text settings from localStorage
+   */
   private loadTextSettings(): void {
     try {
       const savedSettings = localStorage.getItem("webcomfort-text-settings");
       if (savedSettings) {
         const settings = JSON.parse(savedSettings);
         this.textSettings = { ...this.textSettings, ...settings };
+        console.log("Service: Loaded saved text settings");
       }
     } catch (error) {
-      console.error("Error loading text settings:", error);
+      console.error("Service: Error loading text settings:", error);
+      // Continue with default settings if loading fails
     }
   }
 
@@ -191,8 +201,6 @@ export class FTPersonalisationTextStructure {
     const textSpan = button.querySelector(".dropdown-text") as HTMLElement;
     const radio = container.querySelector(`input[name="${property}"][value="${value}"]`) as HTMLInputElement;
 
-
-
     if (radio && textSpan) {
       radio.checked = true;
       const label = radio.nextElementSibling as HTMLElement;
@@ -224,11 +232,28 @@ export class FTPersonalisationTextStructure {
       this.updateDropdownDisplay(property, value as string);
     });
   }
+  /**
+   * Apply text personalization styles to page content
+   * Excludes container-ftwebconfomt to preserve component interface
+   */
   private applyTextPersonalization(property: string, value: string): void {
     console.log(`Service: Applying ${property} = ${value} to page content`);
 
-    // Create or get the style element
+    const styleElement = this.getOrCreateStyleElement();
+    const cssProperty = this.convertToCSSProperty(property);
+    const cssRules = this.generateCSSRules(cssProperty, value);
+
+    this.updateStyleElement(styleElement, cssProperty, cssRules);
+
+    console.log(`Service: Applied CSS rules for ${cssProperty}:`, cssRules);
+  }
+
+  /**
+   * Get existing style element or create new one
+   */
+  private getOrCreateStyleElement(): HTMLStyleElement {
     let styleElement = document.getElementById('ft-text-personalization') as HTMLStyleElement;
+
     if (!styleElement) {
       styleElement = document.createElement('style');
       styleElement.id = 'ft-text-personalization';
@@ -236,64 +261,74 @@ export class FTPersonalisationTextStructure {
       console.log('Service: Created new style element');
     }
 
-    // Create CSS property name (camelCase to kebab-case)
-    const cssProperty = property.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+    return styleElement;
+  }
 
+  /**
+   * Convert camelCase property to kebab-case CSS property
+   */
+  private convertToCSSProperty(property: string): string {
+    return property.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+  }
 
+  /**
+   * Generate CSS rules for text personalization
+   */
+  private generateCSSRules(cssProperty: string, value: string): string {
+    // Apply to all elements except container-ftwebconfomt
+    return `body *:not(.container-ftwebconfomt):not(.container-ftwebconfomt *) { ${cssProperty}: ${value} !important; }`;
+  }
 
-    // Simple approach: Apply to specific areas and exclude sidebar
-    const cssRules = [
-      `.container-ftwebconfomt > div:not(.sidebar) { ${cssProperty}: ${value} !important; }`,
-      `.container-ftwebconfomt > p { ${cssProperty}: ${value} !important; }`,
-      `.container-ftwebconfomt .zone { ${cssProperty}: ${value} !important; }`,
-      `body > div:not(.container-ftwebconfomt) { ${cssProperty}: ${value} !important; }`,
-      `body > p { ${cssProperty}: ${value} !important; }`
-    ].join('\n');
-
-    // Get existing rules and remove old ones for this property
+  /**
+   * Update style element with new CSS rules
+   */
+  private updateStyleElement(styleElement: HTMLStyleElement, cssProperty: string, newRules: string): void {
+    // Remove existing rules for this property
     const existingRules = styleElement.textContent || '';
-    const filteredRules = existingRules.split('\n').filter(line =>
-      !line.includes(cssProperty) && line.trim() !== ''
-    );
+    const filteredRules = existingRules
+      .split('\n')
+      .filter(line => !line.includes(cssProperty) && line.trim() !== '');
 
-    // Add new rules
-    const allRules = [...filteredRules, cssRules].filter(rule => rule.trim() !== '').join('\n');
+    // Combine filtered existing rules with new rules
+    const allRules = [...filteredRules, newRules]
+      .filter(rule => rule.trim() !== '')
+      .join('\n');
+
     styleElement.textContent = allRules;
-
-    console.log(`Service: Applied CSS rules for ${cssProperty}:`, cssRules);
-    console.log('Service: Total CSS content:', allRules);
-  }
-  private showDropdownControls(show: boolean): void {
-    const container = this.getContainer();
-    if (!container) return;
-
-    const controls = container.querySelector("#personnalisationControls") as HTMLElement;
-    if (controls) {
-      controls.style.display = show ? "block" : "none";
-    }
+    console.log('Service: Style element updated with new CSS rules');
   }
 
+  /**
+   * Update a single text setting and apply changes
+   * @param property - The text property to update (fontSize, fontFamily, etc.)
+   * @param value - The new value for the property
+   */
   private updateTextSetting(property: string, value: string): void {
     console.log("Service: Updating text setting", property, "to", value);
 
     // Update internal settings
     this.textSettings[property] = value;
 
-    // Update dropdown display
+    // Update dropdown display to show selection
     this.updateDropdownDisplay(property, value);
 
-    // Always apply the setting when user makes a selection
-    // This ensures immediate feedback when dropdown values change
-    this.applyTextPersonalization(property, value);
+    // Apply the setting immediately for user feedback
+    if (this.active) {
+      this.applyTextPersonalization(property, value);
+    }
 
-    // Save settings
+    // Persist settings to localStorage
     this.saveTextSettings();
   }
+  /**
+   * Save current text settings to localStorage
+   */
   private saveTextSettings(): void {
     try {
       localStorage.setItem("webcomfort-text-settings", JSON.stringify(this.textSettings));
+      console.log("Service: Text settings saved to localStorage");
     } catch (error) {
-      console.error("Error saving text settings:", error);
+      console.error("Service: Error saving text settings:", error);
     }
   }
   // Public method to update settings from external source
@@ -327,13 +362,12 @@ export class FTPersonalisationTextStructure {
   }
 
 
+  /**
+   * Reset text settings to default values and remove applied styles
+   */
   public resetTextSettings(): void {
-    // Remove the personalization CSS style element
-    const styleElement = document.getElementById('ft-text-personalization');
-    if (styleElement) {
-      styleElement.remove();
-      console.log("Service: Removed text personalization CSS");
-    }
+    // Remove applied CSS styles from the page
+    this.removePersonalizationStyles();
 
     // Reset internal settings to defaults
     this.textSettings = {
@@ -344,7 +378,26 @@ export class FTPersonalisationTextStructure {
       wordSpacing: "0px",
     };
 
+    // Clear saved settings from localStorage
+    try {
+      localStorage.removeItem("webcomfort-text-settings");
+      console.log("Service: Cleared saved text settings");
+    } catch (error) {
+      console.error("Service: Error clearing saved settings:", error);
+    }
+
     console.log("Service: Text settings reset completed");
+  }
+
+  /**
+   * Remove personalization CSS style element from the page
+   */
+  private removePersonalizationStyles(): void {
+    const styleElement = document.getElementById('ft-text-personalization');
+    if (styleElement) {
+      styleElement.remove();
+      console.log("Service: Removed text personalization CSS");
+    }
   }
 }
 

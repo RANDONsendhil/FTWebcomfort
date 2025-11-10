@@ -1,4 +1,17 @@
-    :root {
+    export default `
+  /* Shadow DOM root styling - complete isolation */
+  :host {
+    display: block;
+    font-family: "Open Sans", sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333333;
+    background: transparent;
+  }
+
+  /* CSS Variables for the component only */
+  :host,
+  .container-ftwebconfomt {
     --primary-color: #333367;
     --secondary-color: #333367;
     --text-color: #333333;
@@ -11,20 +24,26 @@
     --danger-color: #dc3545;
     --fog-color: #dce3ff;
     --athens-grey: #e9e8f1;
+    --app-font-family: "Open Sans", sans-serif;
   }
 
+  /* Reset all elements within shadow DOM */
   * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
   }
 
-  body {
-    font-family: "Open Sans", sans-serif;
+  /* Ensure component elements don't inherit external styles */
+  .container-ftwebconfomt {
+    font-family: var(--app-font-family);
     font-size: 16px;
     line-height: 1.6;
     color: var(--text-color);
-    background-color: var(--background-color);
+  }
+
+  .container-ftwebconfomt * {
+    font-family: inherit;
   }
 
   .container-ftwebconfomt {
@@ -78,10 +97,14 @@
     opacity: 1;
   }
 
-  .logo {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 8px;
+  /* Logo styling - scoped to container only */
+  .container-ftwebconfomt .logo,
+  .sidebar-header .logo {
+    font-size: 25px !important;
+    font-weight: 500 !important;
+    margin-bottom: 8px !important;
+    color: var(--white) !important;
+    font-family: "Open Sans", sans-serif !important;
   }
 
   .subtitle {
@@ -199,7 +222,7 @@
   }
 
   .component-content {
-    padding: 15px;
+    padding: 12px;
     display: none;
   }
 
@@ -208,7 +231,7 @@
   }
 
   .component-description {
-    font-size: 13px;
+    font-size: 12px;
     color: #666;
     margin-bottom: 15px;
     line-height: 1.5;
@@ -380,3 +403,4 @@
       gap: 15px;
     }
   }
+`

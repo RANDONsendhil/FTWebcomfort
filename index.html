@@ -6,8 +6,13 @@
 		<link rel="stylesheet" href="https://cdn-t.ft-qvr.fr/studio/design-system/css/styles.css" />
 		<link rel="stylesheet" href="./src/style.css" />
 
-		<style>
-			#box {
+		<style> 
+
+		body{ 
+			font-family: 'Courier New', Courier, monospace
+		}
+		
+					#box {
 				width: 100px;
 				height: 100px;
 				background-color: rgb(9, 12, 103);
@@ -26,6 +31,8 @@
 				}
 			}
 			.zone {
+				position: relative;
+
 				width: 150px;
 				height: 50px;
 				background-color: #4caf50;
@@ -46,8 +53,21 @@
 	</head>
 
 	<body>
-		<div class="container-ftwebconfomt">
-			<div class="zone" onclick="alert('Zone 1 clicked')">Zone 1</div>
+ 
+			<main-app></main-app>
+			 
+		<div>
+			<p>
+				Introduction La documentation s'articule autour de fondamentaux qui traitent des couleurs, typographie, espacements et points de
+				rupture, une bibliothèque d'icônes et d'illustrations et de bonnes pratiques. Au sein de chaque composant, l'onglet "Documentation"
+				renvoie lui vers une présentation sous Figma décrivant son anatomie, son usage et ses variantes. Enfin, on trouve aussi pour certains
+				composants, une documentation associée à son usage sous la forme d'un webcomposant. Bonnes pratiques Le design system permet à France
+				Travail d’assurer pour nos sites une cohérence visuelle conforme à la charte France Travail tout en s'assurant des conditions
+				d’accessibilité, d'écoconception et d’utilisabilité optimales pour nos usagers.
+			</p>
+			
+		</div>
+		<div class="zone" onclick="alert('Zone 1 clicked')">Zone 1</div>
 			<div class="zone" onclick="alert('Zone 2 clicked')">Zone 2</div>
 			<div class="zone" onclick="alert('Zone 3 clicked')">Zone 3</div>
 			<div class="zone" onclick="alert('Zone 4 clicked')">Zone 4</div>
@@ -61,43 +81,6 @@
 
 			<img src="animation.gif" alt="animation" style="width: 300px; height: 300px" />
 			<!-- Barre latérale des composants -->
-			<aside class="sidebar">
-				<div class="sidebar-header">
-					<div class="logo">Webcomfort</div>
-					<div class="subtitle">Accessibilité intelligente visuelle</div>
-					<button class="close-sidebar-btn" id="closeSidebarBtn" title="Fermer le panneau">✕</button>
-				</div>
-
-				<div class="stats-section">
-					<h3 class="stats-title">Statistiques d'usage</h3>
-					<div class="stats-grid">
-						<div class="stat-item">
-							<span class="stat-number" id="activeComponents">0</span>
-							<span class="stat-label">Actifs</span>
-						</div>
-						<div class="stat-item">
-							<span class="stat-number" id="totalComponents">7</span>
-							<span class="stat-label">Total</span>
-						</div>
-					</div>
-				</div>
-
-				<div class="components-section">
-					<h3 class="components-title">Composants disponibles</h3>
-					<main-app></main-app>
-				</div>
-			</aside>
-		</div>
-		<div>
-			<p>
-				Introduction La documentation s'articule autour de fondamentaux qui traitent des couleurs, typographie, espacements et points de
-				rupture, une bibliothèque d'icônes et d'illustrations et de bonnes pratiques. Au sein de chaque composant, l'onglet "Documentation"
-				renvoie lui vers une présentation sous Figma décrivant son anatomie, son usage et ses variantes. Enfin, on trouve aussi pour certains
-				composants, une documentation associée à son usage sous la forme d'un webcomposant. Bonnes pratiques Le design system permet à France
-				Travail d’assurer pour nos sites une cohérence visuelle conforme à la charte France Travail tout en s'assurant des conditions
-				d’accessibilité, d'écoconception et d’utilisabilité optimales pour nos usagers.
-			</p>
-		</div>
 		<!-- <script type="module" src="./dist/script.js"></script> -->
 
 		<script type="module" src="/src/app.ts"></script>

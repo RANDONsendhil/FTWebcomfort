@@ -1,7 +1,19 @@
 export default `
-/* Additional styles for text personalization component */
-/* Override global styles to prevent overlapping */
+/* ============================================
+   TEXT PERSONALIZATION COMPONENT STYLES
+   ============================================ */
 
+/* CSS Variables */
+
+.component-title {
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 14px;
+}
+
+/* ============================================
+   TOGGLE SWITCH
+   ============================================ */
 
 .component-toggle {
   width: 40px;
@@ -32,166 +44,146 @@ export default `
   transform: translateX(20px);
 }
 
-.component-header {
-      padding: 15px;
-      background: linear-gradient(135deg, var(--athens-grey), #e9ecef);
-      border-bottom: 1px solid var(--border-color);
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-.component-content {
-  padding: 15px;
-  display: none;
-  overflow: visible !important; /* Allow dropdowns to be visible */
+/* ============================================
+   TEXT PERSONALIZATION CONTROLS
+   ============================================ */
+
+#personnalisationControls {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+  padding-bottom: 20px;
+}
+
+/* ============================================
+   CUSTOM DROPDOWN STYLES
+   ============================================ */
+
+/* Dropdown Container */
+.custom-dropdown {
+  position: relative;
+  margin-bottom: 20px;
+  z-index: 1;
+}
+
+.custom-dropdown.compact {
+  margin-bottom: 15px;
+}
+
+.custom-dropdown.open {
+  z-index: 1000;
+}
+
+/* Dropdown Label */
+.dropdown-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: var(--text-color);
+  font-size: 11px;
+}
+
+/* Dropdown Button */
+.dropdown-button {
+  padding: 8px 30px 8px 10px;
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  transition: border-color 0.2s ease;
   position: relative;
 }
 
-.component-content.show {
-  display: block;
-  overflow: visible !important;
+.dropdown-button:hover {
+  border-color: var(--primary-color);
 }
 
-    .component-description {
-      font-size: 13px;
-      color: #666;
-      margin-bottom: 15px;
-      line-height: 1.5;
-    }
+.dropdown-button::after {
+  content: "▼";
+  font-size: 10px;
+  color: #666;
+  position: absolute;
+  right: 10px;
+  transition: transform 0.2s ease;
+}
 
-    /* Text personalization specific styles */
-    #personnalisationControls {
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border-color);
-      padding-bottom: 20px; /* Space for dropdowns */
-    }
+.dropdown-button.open::after {
+  transform: rotate(180deg);
+}
 
-    /* Custom dropdown styles */
-    .custom-dropdown {
-      position: relative;
-      margin-bottom: 20px;
-      z-index: 1;
-    }
+.dropdown-text {
+  flex: 1;
+  text-align: left;
+}
 
-    .custom-dropdown.compact {
-      margin-bottom: 15px;
-    }
+/* Dropdown Options Container */
+.dropdown-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 10000;
+  display: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  min-width: 100%;
+}
 
-    /* Increase z-index when dropdown is open to prevent overlapping */
-    .custom-dropdown.open {
-      z-index: 1000;
-    }
+.dropdown-options.show {
+  display: block;
+}
 
-    .dropdown-label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 5px;
-      color: var(--text-color);
-      font-size: 13px;
-    }
+/* Bottom Dropdown Adjustment */
+.custom-dropdown:last-child .dropdown-options {
+  bottom: 100%;
+  top: auto;
+  border-radius: 4px 4px 0 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: none;
+}
 
-    .dropdown-button {
-      padding: 8px 30px 8px 10px;
-      background: var(--white);
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 13px;
-      transition: border-color 0.2s ease;
-      position: relative;
-    }
+/* ============================================
+   DROPDOWN OPTIONS
+   ============================================ */
 
-    .dropdown-button:hover {
-      border-color: var(--primary-color);
-    }
+.dropdown-option {
+  display: block;
+}
 
-    .dropdown-button::after {
-      content: "▼";
-      font-size: 10px;
-      color: #666;
-      position: absolute;
-      right: 10px;
-      transition: transform 0.2s ease;
-    }
+.dropdown-option input[type="radio"] {
+  display: none;
+}
 
-    .dropdown-button.open::after {
-      transform: rotate(180deg);
-    }
+.dropdown-option label {
+  display: block;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-size: 11px;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f0f0f0;
+  user-select: none;
+}
 
-    .dropdown-text {
-      flex: 1;
-      text-align: left;
-    }
+.dropdown-option label:hover {
+  background-color: #f8f9fa;
+  color: var(--primary-color);
+}
 
-    .dropdown-options {
-      position: relative;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: var(--white);
-      border: 1px solid var(--border-color);
-      border-top: none;
-      border-radius: 0 0 4px 4px;
-      max-height: 250px;
-      overflow-y: auto;
-      z-index: 10000;
-      display: none;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      min-width: 100%;
-      width: auto;
-    }
+.dropdown-option input[type="radio"]:checked + label {
+  background-color: var(--primary-color);
+  color: white;
+}
 
-    .dropdown-options.show {
-      display: block;
-    }
-
-    /* Ajustement pour les dropdowns en bas de card */
-    .custom-dropdown:last-child .dropdown-options {
-      bottom: 100%;
-      top: auto;
-      border-radius: 4px 4px 0 0;
-      border-top: 1px solid var(--border-color);
-      border-bottom: none;
-    }
-
-    .dropdown-option {
-      display: block;
-    }
-
-    .dropdown-option input[type="radio"] {
-      display: none;
-    }
-
-    .dropdown-option label {
-      display: block;
-      padding: 10px 12px;
-      cursor: pointer;
-      font-size: 13px;
-      transition: all 0.2s ease;
-      border-bottom: 1px solid #f0f0f0;
-      user-select: none;
-    }
-
-    .dropdown-option label:hover {
-      background-color: #f8f9fa;
-      color: var(--primary-color);
-    }
-
-    .dropdown-option input[type="radio"]:checked + label {
-      background-color: var(--primary-color);
-      color: white;
-    }
-
-    .dropdown-option:last-child label {
-      border-bottom: none;
-    }
-
- 
- 
-
-    `;
+.dropdown-option:last-child label {
+  border-bottom: none;
+}
+`;

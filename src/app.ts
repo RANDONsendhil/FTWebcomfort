@@ -5,12 +5,12 @@ import { FTPersonalisationText } from "./components/vision/personnalisationTexte
 import "./main-app"; // Import to register the custom element
 
 /** Load and instantiate all accessibility modules */
-function loadModules(shadowRoot: ShadowRoot): void {
-  console.log("loadModules called with shadowRoot:", shadowRoot);
-  const personalizationTextEl = shadowRoot.querySelector<HTMLDivElement>("#personnalisationTexteContainer");
-  const epilepsieEl = shadowRoot.querySelector<HTMLDivElement>("#epilepsieContainer");
-  const dyslexieEl = shadowRoot.querySelector<HTMLDivElement>("#dyslexieContainer");
-  const arthroseEl = shadowRoot.querySelector<HTMLDivElement>("#arthroseContainer");
+function loadModules(container: HTMLElement | ShadowRoot): void {
+  console.log("loadModules called with container:", container);
+  const personalizationTextEl = container.querySelector<HTMLDivElement>("#personnalisationTexteContainer");
+  const epilepsieEl = container.querySelector<HTMLDivElement>("#epilepsieContainer");
+  const dyslexieEl = container.querySelector<HTMLDivElement>("#dyslexieContainer");
+  const arthroseEl = container.querySelector<HTMLDivElement>("#arthroseContainer");
   
   
   console.log("Container elements found:", { epilepsieEl, dyslexieEl, arthroseEl });

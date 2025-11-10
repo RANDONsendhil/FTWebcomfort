@@ -41,7 +41,8 @@ function injectFontFace(fontPath: string, fontFamily: string): void {
             font-style: normal;
         }
         
-        body, body * {
+        /* Apply dyslexic font excluding container-ftwebconfomt */
+        body *:not(.container-ftwebconfomt):not(.container-ftwebconfomt *) {
             font-family: '${fontFamily}', ${FALLBACK_FONTS} !important;
         }
     `;

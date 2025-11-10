@@ -1,99 +1,221 @@
 export default `
-label {
-  font-family: sans-serif;
-  font-size: 1rem;
-  padding-right: 10px;
+/* ============================================
+   DYSLEXIE COMPONENT STYLES
+   ============================================ */
+
+/* CSS Variables */
+:root {
+  --primary-color: #333367;
+  --secondary-color: #333367;
+  --text-color: #333333;
+  --background-color: #f8f9fa;
+  --white: #ffffff;
+  --light-gray: #e9ecef;
+  --border-color: #dee2e6;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  --fog-color: #dce3ff;
+  --athens-grey: #e9e8f1;
 }
 
-select {
-  font-size: 0.9rem;
-  padding: 2px 5px;
+/* ============================================
+   COMPONENT BASE STYLES
+   ============================================ */
+
+ 
+
+/* ============================================
+   STATUS DISPLAY
+   ============================================ */
+
+.status {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 15px;
+  line-height: 1.5;
 }
 
-.dropdown {
-  display: flex;
+/* ============================================
+   TOGGLE SWITCH
+   ============================================ */
+
+.component-toggle {
+  width: 40px;
+  height: 20px;
+  background: #ccc;
+  border-radius: 10px;
   position: relative;
-  width: 100%;
-  margin-top: 15px;
-  flex-direction: column-reverse;
-  justify-content: space-around;
+  transition: background 0.2s ease;
 }
 
-.dropdown-menu {
+.component-toggle.active {
+  background: var(--success-color);
+}
+
+.component-toggle::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--white);
+  top: 2px;
+  left: 2px;
+  transition: transform 0.2s ease;
+}
+
+.component-toggle.active::after {
+  transform: translateX(20px);
+}
+
+/* ============================================
+   DYSLEXIE CONTROLS CONTAINER
+   ============================================ */
+
+#dyslexie-controls {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+  padding-bottom: 20px;
+}
+
+/* ============================================
+   CUSTOM DROPDOWN STYLES
+   ============================================ */
+
+/* Dropdown Container */
+.custom-dropdown {
   position: relative;
-  width: 100%;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  animation: slideDown 0.3s ease-out;
+  margin-bottom: 20px;
+  z-index: 1;
 }
 
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.custom-dropdown.compact {
+  margin-bottom: 15px;
 }
 
-.dropdown-item {
-  padding: 12px 20px;
+.custom-dropdown.open {
+  z-index: 1000;
+}
+
+/* Dropdown Label */
+.dropdown-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: var(--text-color);
+  font-size: 13px;
+}
+
+/* Dropdown Button */
+.dropdown-button {
+  padding: 8px 30px 8px 10px;
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  border-bottom: 1px solid #f0f0f0;
-  font-size: 0.95rem;
-  color: #333;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  transition: border-color 0.2s ease;
+  position: relative;
 }
 
-.dropdown-item:last-child {
+.dropdown-button:hover {
+  border-color: var(--primary-color);
+}
+
+.dropdown-button::after {
+  content: "▼";
+  font-size: 10px;
+  color: #666;
+  position: absolute;
+  right: 10px;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-button.open::after {
+  transform: rotate(180deg);
+}
+
+.dropdown-text {
+  flex: 1;
+  text-align: left;
+}
+
+/* Dropdown Options Container */
+.dropdown-options {
+  position: relative;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 10000;
+  display: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  min-width: 100%;
+}
+
+.dropdown-options.show {
+  display: block;
+}
+
+/* Bottom Dropdown Adjustment */
+.custom-dropdown:last-child .dropdown-options {
+  bottom: 100%;
+  top: auto;
+  border-radius: 4px 4px 0 0;
+  border-top: 1px solid var(--border-color);
   border-bottom: none;
 }
 
-.dropdown-item:hover {
-  background: #f8f9fa;
-  color: #007bff;
-}
+/* ============================================
+   DROPDOWN OPTIONS
+   ============================================ */
 
-.dropdown-item:active {
-  background: #e9ecef;
-}
-
-.dropdown-item.selected {
-  background: #007bff;
-  color: white;
-  font-weight: bold;
-}
-
-.dropdown-item.selected:hover {
-  background: #0056b3;
-}
-
-/* Add icon/checkmark for selected item */
-.dropdown-item.selected::after {
-  content: "✓";
-  margin-left: 10px;
-  font-weight: bold;
-}
-
-/* Empty state */
-.dropdown-menu:empty::after {
-  content: "Aucune option disponible";
+.dropdown-option {
   display: block;
-  padding: 20px;
-  text-align: center;
-  color: #999;
-  font-style: italic;
 }
 
-/* Container styles */
+.dropdown-option input[type="radio"] {
+  display: none;
+}
+
+.dropdown-option label {
+  display: block;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f0f0f0;
+  user-select: none;
+}
+
+.dropdown-option label:hover {
+  background-color: #f8f9fa;
+  color: var(--primary-color);
+}
+
+.dropdown-option input[type="radio"]:checked + label {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.dropdown-option:last-child label {
+  border-bottom: none;
+}
+
+/* ============================================
+   LEGACY SUPPORT
+   ============================================ */
+
 #dropdown-container {
   margin-top: 10px;
 }
@@ -101,4 +223,4 @@ select {
 #dropdown-container:empty {
   display: none !important;
 }
-`;
+  `;
