@@ -78,33 +78,37 @@ export abstract class FTWebconfortBaseComponent<
   }
 
   /** Called when the component is activated (override in child classes) */
-  protected onActivate(): void {
-    this.showComponentContent(true);
+  protected onActivate(): boolean {
+    return this.baseShowComponentContent(true);
   }
 
   /** Called when the component is deactivated (override in child classes) */
-  protected onDeactivate(): void {
-    this.showComponentContent(false);
+  protected onDeactivate(): boolean {
+    return this.baseShowComponentContent(false);
   }
 
   /** Called to update displayed text or status (override in child classes) */
-  protected updateText(): void {}
+  protected updateText(): void {
+    if (!this.$textStatus) return;
 
-  /** 
-   * Shows/hides component content - can be overridden in child classes
-   * Child classes should call super.showComponentContent(show) to maintain base functionality
-   */
-  protected showComponentContent(show: boolean): void {
-    console.log("Base showComponentContent called with:", show);
-    this.baseShowComponentContent(show);
+		const statusText = this.active
+			? "Personnalisation : Activée"
+			: "Personnalisation : Désactivée";
+
+		this.$textStatus.textContent = statusText;
+		this.$textStatus.style.color = this.active ? "green" : "gray";
+
+		console.debug(`[${this.config.name}] Status updated → ${statusText}`);
   }
 
   /** 
    * Core implementation for showing/hiding content - can be called from child classes
    * Contains the base DOM manipulation logic that child classes can use
+   * @param show - Whether to show or hide the content
+   * @returns true if the operation was successful, false if elements are missing
    */
-  protected baseShowComponentContent(show: boolean): void {
-    if (!this.$componentContent) return;
+  protected baseShowComponentContent(show: boolean): boolean {
+    if (!this.$componentContent) return false;
     
     // Toggle the content visibility
     this.$componentContent.classList.toggle("show", show);
@@ -113,5 +117,7 @@ export abstract class FTWebconfortBaseComponent<
     if (this.$btnToggle) {
       this.$btnToggle.classList.toggle("active", show);
     }
+    
+    return true;
   }
 }

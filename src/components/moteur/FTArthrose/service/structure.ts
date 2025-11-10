@@ -16,8 +16,6 @@ export class FTArthroseStructure {
     constructor(container?: HTMLElement) {
         console.log("FTPersonalisationTextService initialized");
         this.container = container;
-       
- 
     }
  
 public getContainer(): HTMLElement | null {

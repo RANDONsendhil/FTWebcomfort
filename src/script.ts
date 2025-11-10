@@ -18,7 +18,6 @@ export class AccessibilityPanel {
 	initializeComponents(): void {
 		// Initialise tous les composants comme inactifs
 		const componentNames = ["textPersonalization", "dyslexia", "epilepsy", "readingGuide", "darkMode", "magnifier", "letterSpacing"];
-
 		componentNames.forEach((name) => {
 			this.components.set(name, false);
 		});
