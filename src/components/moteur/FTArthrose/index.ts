@@ -1,7 +1,6 @@
 import { template } from "./template/index.html";
-import { disableArthrose, enableArthrose } from "./service/index";
-import { FTWebconfortBaseComponent } from "../../abscomp/abscomp";
 import { FTArthroseStructure } from "./service/structure";
+import { FTWebconfortBaseComponent } from "../../basecomponent/index";
 
 /** Configuration for the Arthrose component */
 export class FTArthroseConfig {
@@ -36,7 +35,6 @@ export class FTArthrose extends FTWebconfortBaseComponent<FTArthroseConfig> {
 	protected override onDeactivate(): boolean {
 		console.info(`[${this.config.name}] Deactivated`);
 		const success = (super.onDeactivate?.() ?? true) as boolean;
-
 		if (success) {
 			this.config.active = true;
 			this.ftArthroseStructure.enableArthrose(false);

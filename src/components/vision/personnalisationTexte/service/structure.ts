@@ -3,54 +3,68 @@
  * This acts as a configuration provider and service layer
  */
 export class FTPersonalisationTextStructure {
-    public name = "Personnalisation du texte";
-    public description = "Ajustez la taille, la police et l'espacement du texte pour améliorer la lisibilité.";
-    public active: boolean = false;
-    
-    private container?: HTMLElement;
-    private textSettings: {
-        fontSize: string;
-        fontFamily: string;
-        lineHeight: string;
-        letterSpacing: string;
-        wordSpacing: string;
-        [key: string]: string;
+  public name = "Personnalisation du texte";
+  public description = "Ajustez la taille, la police et l'espacement du texte pour améliorer la lisibilité.";
+  public active: boolean = false;
+
+  private container?: HTMLElement;
+  private textSettings: {
+    fontSize: string;
+    fontFamily: string;
+    lineHeight: string;
+    letterSpacing: string;
+    wordSpacing: string;
+    [key: string]: string;
+  };
+
+  constructor(container?: HTMLElement) {
+    console.log("FTPersonalisationTextService initialized");
+    this.container = container;
+
+    // Initialize text settings
+    this.textSettings = {
+      fontSize: "16px",
+      fontFamily: "'Open Sans', sans-serif",
+      lineHeight: "1.6",
+      letterSpacing: "0px",
+      wordSpacing: "0px",
     };
-    
-    constructor(container?: HTMLElement) {
-        console.log("FTPersonalisationTextService initialized");
-        this.container = container;
-        
-        // Initialize text settings
-        this.textSettings = {
-            fontSize: "16px",
-            fontFamily: "'Open Sans', sans-serif",
-            lineHeight: "1.6",
-            letterSpacing: "0px",
-            wordSpacing: "0px",
-        };
-        
-        this.loadTextSettings();
-        this.initializeDropdowns();
-        this.initializeComponentState();
+
+    this.loadTextSettings();
+    this.initializeDropdowns();
+    this.initializeComponentState();
+  }
+
+  public getContainer(): HTMLElement | null {
+    return this.container || null;
+  }
+
+  /** Enable personalization and apply settings */
+  public enablePersonalisation(enable: boolean): void {
+    this.active = enable;
+    console.log("Service: Personalization", enable ? "enabled" : "disabled");
+
+    if (enable) {
+      this.applyAllTextSettings();
+    } else {
+      this.resetTextSettings();
     }
- 
-public getContainer(): HTMLElement | null {
-  // Try to find the container element where this component is mounted
-  return  this.container || null;
-}
+  }
+
+  /** Disable personalization */
+  public disablePersonalisation(): void {
+    this.enablePersonalisation(false);
+  }
 
 
   private initializeComponentState(): void {
-      // Set initial state based on config
-      setTimeout(() => {
-  
-        if (this.active) {
-          this.applyAllTextSettings();
-        }
-      }, 50);
+    setTimeout(() => {
+      if (this.active) {
+        this.applyAllTextSettings();
       }
- 
+    }, 50);
+  }
+
 
   private loadTextSettings(): void {
     try {
@@ -64,7 +78,7 @@ public getContainer(): HTMLElement | null {
     }
   }
 
-  
+
   private initializeDropdowns(): void {
     // Wait for the component to be rendered, then initialize dropdowns
     setTimeout(() => {
@@ -73,13 +87,27 @@ public getContainer(): HTMLElement | null {
 
       // Initialize dropdown event listeners within the component container
       container.addEventListener("change", (e) => {
+        console.log("Service: Change event detected", e.target);
         const target = e.target as HTMLInputElement;
-        if (target && target.type === "radio" && target.closest(".dropdown-options")) {
-          const dropdown = target.name;
-          const value = target.value;
-          
-          if (this.textSettings.hasOwnProperty(dropdown)) {
-            this.updateTextSetting(dropdown, value);
+
+        if (target && target.type === "radio") {
+          console.log("Service: Radio button changed", { name: target.name, value: target.value });
+
+          if (target.closest(".dropdown-options")) {
+            const dropdown = target.name;
+            const value = target.value;
+
+            console.log("Service: Processing dropdown change", { dropdown, value });
+
+
+
+            if (this.textSettings.hasOwnProperty(dropdown)) {
+              this.updateTextSetting(dropdown, value);
+            } else {
+              console.warn("Service: Unknown dropdown property:", dropdown);
+            }
+          } else {
+            console.log("Service: Radio not in dropdown options");
           }
         }
       });
@@ -88,7 +116,7 @@ public getContainer(): HTMLElement | null {
       container.addEventListener("click", (e) => {
         const target = e.target as HTMLElement;
         const dropdownButton = target.closest("[data-dropdown]") as HTMLElement;
-        
+
         if (dropdownButton) {
           e.stopPropagation();
           this.handleDropdownClick(dropdownButton);
@@ -108,24 +136,27 @@ public getContainer(): HTMLElement | null {
   }
 
 
-  
+
   private handleDropdownClick(button: HTMLElement): void {
     const dropdown = button.getAttribute("data-dropdown");
     const options = button.nextElementSibling as HTMLElement;
-    
-    if (!options) return;
+    const dropdownContainer = button.closest(".custom-dropdown") as HTMLElement;
 
-    // Close other dropdowns
+    if (!options || !dropdownContainer) return;
+
+    // Check if this dropdown is currently open BEFORE closing others
+    const isCurrentlyOpen = options.classList.contains("show");
+
+    // Close all dropdowns first
     this.closeAllDropdowns();
 
-    // Toggle current dropdown
-    if (options.classList.contains("show")) {
-      options.classList.remove("show");
-      button.classList.remove("open");
-    } else {
+    // If this dropdown was NOT open, open it
+    if (!isCurrentlyOpen) {
       options.classList.add("show");
       button.classList.add("open");
+      dropdownContainer.classList.add("open");
     }
+    // If it was open, it stays closed (already closed by closeAllDropdowns)
   }
 
   private closeAllDropdowns(): void {
@@ -135,14 +166,16 @@ public getContainer(): HTMLElement | null {
     container.querySelectorAll(".dropdown-options.show").forEach((options) => {
       options.classList.remove("show");
       const button = options.previousElementSibling as HTMLElement;
+      const dropdownContainer = options.closest(".custom-dropdown") as HTMLElement;
+
       if (button) {
         button.classList.remove("open");
       }
+      if (dropdownContainer) {
+        dropdownContainer.classList.remove("open");
+      }
     });
   }
-
-
-
 
 
   private updateDropdownDisplay(property: string, value: string): void {
@@ -150,54 +183,85 @@ public getContainer(): HTMLElement | null {
     if (!container) return;
 
     const button = container.querySelector(`[data-dropdown="${property}"]`) as HTMLElement;
-    if (!button) return;
+    if (!button) {
+      console.warn(`Service: Button not found for property: ${property}`);
+      return;
+    }
 
     const textSpan = button.querySelector(".dropdown-text") as HTMLElement;
     const radio = container.querySelector(`input[name="${property}"][value="${value}"]`) as HTMLInputElement;
-    
+
+
+
     if (radio && textSpan) {
       radio.checked = true;
       const label = radio.nextElementSibling as HTMLElement;
       if (label) {
         textSpan.textContent = label.textContent || value;
+
+
       }
+    } else {
+      console.warn(`Service: Missing elements for ${property}`, { radio: !!radio, textSpan: !!textSpan });
     }
 
     // Close the dropdown
     const options = button.nextElementSibling as HTMLElement;
+    const dropdownContainer = button.closest(".custom-dropdown") as HTMLElement;
+
     if (options) {
       options.classList.remove("show");
       button.classList.remove("open");
     }
+    if (dropdownContainer) {
+      dropdownContainer.classList.remove("open");
+    }
   }
 
-    private applyAllTextSettings(): void {
+  private applyAllTextSettings(): void {
     Object.entries(this.textSettings).forEach(([property, value]) => {
       this.applyTextPersonalization(property, value as string);
       this.updateDropdownDisplay(property, value as string);
     });
   }
   private applyTextPersonalization(property: string, value: string): void {
-    const contentArea = document.querySelector(".content-area") as HTMLElement;
-    if (!contentArea) return;
+    console.log(`Service: Applying ${property} = ${value} to page content`);
 
-    switch (property) {
-      case "fontSize":
-        contentArea.style.fontSize = value;
-        break;
-      case "fontFamily":
-        contentArea.style.fontFamily = value;
-        break;
-      case "lineHeight":
-        contentArea.style.lineHeight = value;
-        break;
-      case "letterSpacing":
-        contentArea.style.letterSpacing = value;
-        break;
-      case "wordSpacing":
-        contentArea.style.wordSpacing = value;
-        break;
+    // Create or get the style element
+    let styleElement = document.getElementById('ft-text-personalization') as HTMLStyleElement;
+    if (!styleElement) {
+      styleElement = document.createElement('style');
+      styleElement.id = 'ft-text-personalization';
+      document.head.appendChild(styleElement);
+      console.log('Service: Created new style element');
     }
+
+    // Create CSS property name (camelCase to kebab-case)
+    const cssProperty = property.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+
+
+
+    // Simple approach: Apply to specific areas and exclude sidebar
+    const cssRules = [
+      `.container-ftwebconfomt > div:not(.sidebar) { ${cssProperty}: ${value} !important; }`,
+      `.container-ftwebconfomt > p { ${cssProperty}: ${value} !important; }`,
+      `.container-ftwebconfomt .zone { ${cssProperty}: ${value} !important; }`,
+      `body > div:not(.container-ftwebconfomt) { ${cssProperty}: ${value} !important; }`,
+      `body > p { ${cssProperty}: ${value} !important; }`
+    ].join('\n');
+
+    // Get existing rules and remove old ones for this property
+    const existingRules = styleElement.textContent || '';
+    const filteredRules = existingRules.split('\n').filter(line =>
+      !line.includes(cssProperty) && line.trim() !== ''
+    );
+
+    // Add new rules
+    const allRules = [...filteredRules, cssRules].filter(rule => rule.trim() !== '').join('\n');
+    styleElement.textContent = allRules;
+
+    console.log(`Service: Applied CSS rules for ${cssProperty}:`, cssRules);
+    console.log('Service: Total CSS content:', allRules);
   }
   private showDropdownControls(show: boolean): void {
     const container = this.getContainer();
@@ -209,18 +273,19 @@ public getContainer(): HTMLElement | null {
     }
   }
 
-    private updateTextSetting(property: string, value: string): void {
+  private updateTextSetting(property: string, value: string): void {
+    console.log("Service: Updating text setting", property, "to", value);
+
     // Update internal settings
     this.textSettings[property] = value;
-    
+
     // Update dropdown display
     this.updateDropdownDisplay(property, value);
-    
-    // Apply the setting if component is active
-    if (this.active) {
-      this.applyTextPersonalization(property, value);
-    }
-    
+
+    // Always apply the setting when user makes a selection
+    // This ensures immediate feedback when dropdown values change
+    this.applyTextPersonalization(property, value);
+
     // Save settings
     this.saveTextSettings();
   }
@@ -249,7 +314,7 @@ public getContainer(): HTMLElement | null {
     }
     this.saveTextSettings();
   }
-    // Public method to get current settings
+  // Public method to get current settings
   public getTextSettings(): {
     fontSize: string;
     fontFamily: string;
@@ -263,38 +328,25 @@ public getContainer(): HTMLElement | null {
 
 
   public resetTextSettings(): void {
-    // Try multiple selectors to find the content area
-    const contentArea = document.querySelector(".content-area") as HTMLElement;
-    const demoContent = document.querySelector(".demo-content") as HTMLElement;
-    const mainContent = document.querySelector("main") as HTMLElement;
-    const bodyElement = document.body;
-    
-    // Apply reset to the found content area or fallback to body
-    const targetElement = contentArea || demoContent || mainContent || bodyElement;
-    
-    if (targetElement) {
-      console.log("Service: Resetting text settings on:", targetElement.className || "body");
-      targetElement.style.fontSize = "";
-      targetElement.style.fontFamily = "";
-      targetElement.style.lineHeight = "";
-      targetElement.style.letterSpacing = "";
-      targetElement.style.wordSpacing = "";
-      
-      // Also reset internal settings to defaults
-      this.textSettings = {
-        fontSize: "16px",
-        fontFamily: "'Open Sans', sans-serif",
-        lineHeight: "1.6",
-        letterSpacing: "0px",
-        wordSpacing: "0px",
-      };
-      
-      console.log("Service: Text settings reset completed");
-    } else {
-      console.warn("Service: No target element found for resetting text settings");
+    // Remove the personalization CSS style element
+    const styleElement = document.getElementById('ft-text-personalization');
+    if (styleElement) {
+      styleElement.remove();
+      console.log("Service: Removed text personalization CSS");
     }
+
+    // Reset internal settings to defaults
+    this.textSettings = {
+      fontSize: "16px",
+      fontFamily: "'Open Sans', sans-serif",
+      lineHeight: "1.6",
+      letterSpacing: "0px",
+      wordSpacing: "0px",
+    };
+
+    console.log("Service: Text settings reset completed");
   }
-} 
+}
 
 
 

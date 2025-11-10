@@ -1,6 +1,6 @@
-import globalcss from "./global.css";
+import globalcss from "./base.css";
 
-export const createGlobalTemplate = ( componentName: string, template: string, description: string) => {
+export const createGlobalTemplate = (componentName: string, template: string, description: string) => {
 	return /*html*/ `
         <style>${globalcss}</style>
         <div class="component-card">

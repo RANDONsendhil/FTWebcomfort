@@ -1,6 +1,6 @@
 import { template, dropDown } from "./template/index.html";
 import { disableFontDys, enableFontDys, changeFontDys } from "./service/index";
-import { FTWebconfortBaseComponent } from "../../abscomp/abscomp";
+import { FTWebconfortBaseComponent } from "../../basecomponent/index";
 
 /** Configuration for Dyslexie component */
 export class FTDysConfig {
@@ -24,13 +24,11 @@ export class FTDyslexie extends FTWebconfortBaseComponent<FTDysConfig> {
 	}
 
 	protected override onActivate(): boolean {
-		console.log("on activate ==> Dyslexie activated, showing dropdown");
-		super.onActivate();
-
 		console.info(`[${this.config.name}] Activated`);
 		const success = (super.onActivate?.() ?? true) as boolean;
 		if (success) {
 			this.config.active = true;
+			enableFontDys();
 			this.showDropdown();
 			this.updateText();
 			return success;
@@ -43,8 +41,8 @@ export class FTDyslexie extends FTWebconfortBaseComponent<FTDysConfig> {
 		const success = (super.onDeactivate?.() ?? true) as boolean;
 		if (success) {
 			this.config.active = false;
-			this.hideDropdown();
 			disableFontDys();
+			this.hideDropdown();
 			this.updateText();
 			return success;
 		}
@@ -61,7 +59,6 @@ export class FTDyslexie extends FTWebconfortBaseComponent<FTDysConfig> {
 			console.error("Dropdown container not found!");
 			return;
 		}
-
 		this.$dropdownContainer.innerHTML = dropDown;
 		this.$dropdownContainer.style.display = "block";
 		this.$fontSelect = this.$dropdownContainer.querySelector("#fontDys") || null;
@@ -70,7 +67,6 @@ export class FTDyslexie extends FTWebconfortBaseComponent<FTDysConfig> {
 
 	private hideDropdown(): void {
 		if (!this.$dropdownContainer) return;
-
 		if (this.$fontSelect) {
 			this.$fontSelect.removeEventListener("change", this.handleFontChange);
 		}
@@ -84,13 +80,10 @@ export class FTDyslexie extends FTWebconfortBaseComponent<FTDysConfig> {
 			console.error("Font select element not found!");
 			return;
 		}
-
-		// Set default font
 		if (this.$fontSelect.options.length > 0) {
 			this.$fontSelect.selectedIndex = 0;
 			changeFontDys(this.$fontSelect.value);
 		}
-
 		this.$fontSelect.addEventListener("change", this.handleFontChange);
 	}
 

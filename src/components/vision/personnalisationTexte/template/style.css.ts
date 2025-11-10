@@ -1,37 +1,7 @@
 export default `
 /* Additional styles for text personalization component */
 /* Override global styles to prevent overlapping */
-     :root {
-      --primary-color: #333367;
-      --secondary-color: #333367;
-      --text-color: #333333;
-      --background-color: #f8f9fa;
-      --white: #ffffff;
-      --light-gray: #e9ecef;
-      --border-color: #dee2e6;
-      --success-color: #28a745;
-      --warning-color: #ffc107;
-      --danger-color: #dc3545;
-      --fog-color: #dce3ff;
-      --athens-grey: #e9e8f1;
-    }
-.component-card {
-  background: var(--white);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  margin-bottom: 12px;
-  overflow: visible !important; /* Allow dropdowns to extend beyond card */
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  position: relative;
-  z-index: 1; /* Prevent overlapping with other cards */
-}
 
-.component-title {
-  font-weight: 600;
-  color: var(--text-color);
-  font-size: 14px;
-}
 
 .component-toggle {
   width: 40px;
@@ -101,19 +71,17 @@ export default `
     /* Custom dropdown styles */
     .custom-dropdown {
       position: relative;
-      margin-bottom: 15px;
-      z-index: 10;
-      /* Prevent overlapping with adjacent dropdowns */
-      isolation: isolate;
+      margin-bottom: 20px;
+      z-index: 1;
     }
 
     .custom-dropdown.compact {
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
 
     /* Increase z-index when dropdown is open to prevent overlapping */
-    .custom-dropdown:has(.dropdown-options.show) {
-      z-index: 100;
+    .custom-dropdown.open {
+      z-index: 1000;
     }
 
     .dropdown-label {
@@ -161,7 +129,7 @@ export default `
     }
 
     .dropdown-options {
-      position: absolute;
+      position: relative;
       top: 100%;
       left: 0;
       right: 0;
@@ -169,15 +137,16 @@ export default `
       border: 1px solid var(--border-color);
       border-top: none;
       border-radius: 0 0 4px 4px;
-      max-height: 300px;
+      max-height: 250px;
       overflow-y: auto;
-      z-index: 9999 !important; /* Very high z-index to appear above everything */
+      z-index: 10000;
       display: none;
- 
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       min-width: 100%;
       width: auto;
     }
- .dropdown-options.show {
+
+    .dropdown-options.show {
       display: block;
     }
 
@@ -200,17 +169,23 @@ export default `
 
     .dropdown-option label {
       display: block;
-      padding: 8px 10px;
+      padding: 10px 12px;
       cursor: pointer;
       font-size: 13px;
-      transition: background-color 0.2s ease;
+      transition: all 0.2s ease;
       border-bottom: 1px solid #f0f0f0;
+      user-select: none;
     }
 
     .dropdown-option label:hover {
       background-color: #f8f9fa;
+      color: var(--primary-color);
     }
- 
+
+    .dropdown-option input[type="radio"]:checked + label {
+      background-color: var(--primary-color);
+      color: white;
+    }
 
     .dropdown-option:last-child label {
       border-bottom: none;

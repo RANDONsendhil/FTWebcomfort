@@ -1,5 +1,5 @@
 import { template } from "./template/index.html";
-import { FTWebconfortBaseComponent } from "../../abscomp/abscomp";
+import { FTWebconfortBaseComponent } from "../../basecomponent/index";
 import { FTPersonalisationTextStructure } from "./service/structure";
 
 /** Configuration for the Text Personalization component */
@@ -9,18 +9,17 @@ export class FTPersonalisationTextConfig {
 	readonly template = template;
 	active = false;
 }
-
 /**
  * Text Personalization component — handles toggle behavior
  * and delegates text settings management to its service.
  */
 export class FTPersonalisationText extends FTWebconfortBaseComponent<FTPersonalisationTextConfig> {
-	private readonly service: FTPersonalisationTextStructure;
+	private readonly ftPersonalisationTextStructure: FTPersonalisationTextStructure;
 
 	constructor(container: HTMLElement) {
 		// Respect base class constructor signature
 		super(container, new FTPersonalisationTextConfig());
-		this.service = new FTPersonalisationTextStructure(container);
+		this.ftPersonalisationTextStructure = new FTPersonalisationTextStructure(container);
 		console.info(`[${this.config.name}] Component initialized`);
 	}
 
@@ -30,6 +29,8 @@ export class FTPersonalisationText extends FTWebconfortBaseComponent<FTPersonali
 		const success = (super.onActivate?.() ?? true) as boolean;
 		if (success) {
 			this.config.active = true;
+			// Enable personalization in the service
+			this.ftPersonalisationTextStructure.enablePersonalisation(true);
 			this.applyTextSettings();
 			this.updateText();
 			return success;
@@ -43,22 +44,21 @@ export class FTPersonalisationText extends FTWebconfortBaseComponent<FTPersonali
 		const success = (super.onDeactivate?.() ?? true) as boolean;
 		if (success) {
 			this.config.active = false;
-			this.service.resetTextSettings();
+			// Disable personalization in the service
+			this.ftPersonalisationTextStructure.disablePersonalisation();
 			this.updateText();
 			return success;
 		}
 		return false;
 	}
 
-	/** Updates displayed status text */
 	protected override updateText(): void {
 		super.updateText();
 	}
 
-	/** Applies text settings via the service */
 	private applyTextSettings(): void {
 		try {
-			const settings = this.service.setTextSettings({});
+			const settings = this.ftPersonalisationTextStructure.setTextSettings({});
 			console.debug(`[${this.config.name}] Applied text settings`, settings);
 		} catch (error) {
 			console.error(`[${this.config.name}] Failed to apply text settings`, error);
