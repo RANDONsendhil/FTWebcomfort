@@ -88,9 +88,14 @@ export class MainApp extends HTMLElement {
       console.log("loadModules function found, calling it...");
       window.loadModules(this.shadow);
     } else {
-      console.warn("window.loadModules not found - retrying in 100ms...");
-      // Retry after a short delay
-      setTimeout(() => this.waitForLoadModules(), 100);
+      console.log("Waiting for FTWebcomfort to be ready...");
+      // Listen for the ready event instead of polling
+      document.addEventListener('ftwebcomfort-ready', () => {
+        console.log("FTWebcomfort ready event received, loading modules...");
+        if (window.loadModules) {
+          window.loadModules(this.shadow);
+        }
+      }, { once: true });
     }
   }
 }

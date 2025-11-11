@@ -80,7 +80,7 @@ export default `
   font-weight: 600;
   margin-bottom: 5px;
   color: var(--text-color);
-  font-size: 11px;
+  font-size: 13px;
 }
 
 /* Dropdown Button */
@@ -93,7 +93,7 @@ export default `
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 11px;
+  font-size: 13px;
   transition: border-color 0.2s ease;
   position: relative;
 }
@@ -167,7 +167,7 @@ export default `
   display: block;
   padding: 10px 12px;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 13px;
   transition: all 0.2s ease;
   border-bottom: 1px solid #f0f0f0;
   user-select: none;

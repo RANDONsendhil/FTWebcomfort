@@ -8,6 +8,7 @@ export class FTPersonalisationTextStructure {
   public active: boolean = false;
 
   private container?: HTMLElement;
+  private shadowRoot?: ShadowRoot;
   private textSettings: {
     fontSize: string;
     fontFamily: string;
@@ -17,9 +18,10 @@ export class FTPersonalisationTextStructure {
     [key: string]: string;
   };
 
-  constructor(container?: HTMLElement) {
+  constructor(container?: HTMLElement, shadowRoot?: ShadowRoot) {
     console.log("FTPersonalisationTextService initialized");
     this.container = container;
+    this.shadowRoot = shadowRoot;
 
     // Initialize text settings
     this.textSettings = {
@@ -133,8 +135,9 @@ export class FTPersonalisationTextStructure {
         }
       });
 
-      // Close dropdowns when clicking outside (on document level)
-      document.addEventListener("click", (e) => {
+      // Close dropdowns when clicking outside (use shadow root if available)
+      const eventTarget = this.shadowRoot || document;
+      eventTarget.addEventListener("click", (e) => {
         const target = e.target as HTMLElement;
         if (!target.closest(".custom-dropdown") || !container.contains(target)) {
           this.closeAllDropdowns();

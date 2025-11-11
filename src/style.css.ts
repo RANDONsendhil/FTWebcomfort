@@ -166,7 +166,7 @@
     border: 1px solid var(--border-color);
     border-radius: 8px;
     margin-bottom: 12px;
-    overflow: hidden;
+    overflow: visible;
     transition: all 0.2s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   }
@@ -224,10 +224,12 @@
   .component-content {
     padding: 12px;
     display: none;
+    overflow: visible;
   }
 
   .component-content.show {
     display: block;
+    overflow: visible;
   }
 
   .component-description {

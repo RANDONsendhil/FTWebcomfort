@@ -43,6 +43,9 @@ if (arthroseEl) {
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("FTWebcomfort app initialized");
+  
+  // Dispatch ready event to notify components that loadModules is available
+  document.dispatchEvent(new CustomEvent('ftwebcomfort-ready'));
 });
 
 export { loadModules };
