@@ -52,8 +52,8 @@ export const template = /*html*/ `
 				<label for="font-arial">Arial</label>
 			</div>
 			<div class="dropdown-option">
-				<input type="radio" name="fontFamily" id="font-helvetica" value="Helvetica, sans-serif" />
-				<label for="font-helvetica">Helvetica</label>
+				<input type="radio" name="fontFamily" id="font-courier" value="'Courier New', monospace" />
+				<label for="font-courier">Courier New</label>
 			</div>
 			<div class="dropdown-option">
 				<input type="radio" name="fontFamily" id="font-georgia" value="Georgia, serif" />

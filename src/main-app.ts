@@ -21,7 +21,7 @@ export class MainApp extends HTMLElement {
         <div class="container-ftwebconfomt">
             <aside class="sidebar">
                 <div class="sidebar-header">
-                    <div class="logo">Webcomfort</div>
+                    <div class="logo">Webconfort</div>
                     <div class="subtitle">Accessibilité intelligente visuelle</div>
                     <button class="close-sidebar-btn" id="closeSidebarBtn" title="Fermer le panneau">✕</button>
                 </div>
@@ -53,6 +53,13 @@ export class MainApp extends HTMLElement {
                     </div>
                     <div style="padding: 2px;">
                         <div id="arthroseContainer"></div>
+                    </div> 
+                    <div style="padding: 2px;">
+                        <div id="arthroseContainer"></div>
+                    </div>
+
+                     <div style="padding: 2px;">
+                        <div id="guideLectureContainer"></div>
                     </div>
                 </div>
             </aside>

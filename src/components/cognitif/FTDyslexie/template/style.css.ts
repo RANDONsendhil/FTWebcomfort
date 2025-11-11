@@ -203,11 +203,6 @@ export default `
   color: var(--primary-color);
 }
 
-.dropdown-option input[type="radio"]:checked + label {
-  background-color: var(--primary-color);
-  color: white;
-}
-
 .dropdown-option:last-child label {
   border-bottom: none;
 }

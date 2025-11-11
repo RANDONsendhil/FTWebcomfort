@@ -25,16 +25,22 @@ export class FTPersonalisationText extends FTWebconfortBaseComponent<FTPersonali
 
 	/** Called when the component is activated */
 	protected override onActivate(): boolean {
-		console.info(`[${this.config.name}] Activated`);
+		console.warn(`[${this.config.name}] === ACTIVATION STARTED ===`);
 		const success = (super.onActivate?.() ?? true) as boolean;
+		console.warn(`[${this.config.name}] Super onActivate success:`, success);
 		if (success) {
 			this.config.active = true;
+			console.warn(`[${this.config.name}] About to enable service...`);
 			// Enable personalization in the service
 			this.ftPersonalisationTextService.enablePersonalisation(true);
+			console.warn(`[${this.config.name}] Service enabled, applying settings...`);
 			this.applyTextSettings();
+			console.warn(`[${this.config.name}] Settings applied, updating text...`);
 			this.updateText();
+			console.warn(`[${this.config.name}] === ACTIVATION COMPLETED ===`);
 			return success;
 		}
+		console.error(`[${this.config.name}] Activation failed!`);
 		return false;
 	}
 
@@ -58,8 +64,12 @@ export class FTPersonalisationText extends FTWebconfortBaseComponent<FTPersonali
 
 	private applyTextSettings(): void {
 		try {
-			const settings = this.ftPersonalisationTextService.setTextSettings({});
-			console.debug(`[${this.config.name}] Applied text settings`, settings);
+			// Force application of all current settings
+			const settings = this.ftPersonalisationTextService.getTextSettings();
+			console.debug(`[${this.config.name}] Applying text settings`, settings);
+			
+			// Force reapply all settings
+			this.ftPersonalisationTextService.setTextSettings(settings);
 		} catch (error) {
 			console.error(`[${this.config.name}] Failed to apply text settings`, error);
 		}

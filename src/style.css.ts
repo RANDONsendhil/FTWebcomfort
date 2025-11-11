@@ -178,7 +178,7 @@
 
   .component-header {
     padding: 15px;
-    background: linear-gradient(135deg, var(--athens-grey), #e9ecef);
+    background: #f2f5ff;
     border-bottom: 1px solid var(--border-color);
     cursor: pointer;
     display: flex;
