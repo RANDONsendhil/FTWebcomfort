@@ -1,6 +1,6 @@
 import { template } from "./template/index.html";
 import { FTWebconfortBaseComponent } from "../../basecomponent/index";
-import { FTPersonalisationTextStructure } from "./service/structure";
+import { FTPersonalisationTextService } from "./service/index";
 
 /** Configuration for the Text Personalization component */
 export class FTPersonalisationTextConfig {
@@ -14,12 +14,12 @@ export class FTPersonalisationTextConfig {
  * and delegates text settings management to its service.
  */
 export class FTPersonalisationText extends FTWebconfortBaseComponent<FTPersonalisationTextConfig> {
-	private readonly ftPersonalisationTextStructure: FTPersonalisationTextStructure;
+	private readonly ftPersonalisationTextService: FTPersonalisationTextService;
 
 	constructor(container: HTMLElement) {
 		// Respect base class constructor signature
 		super(container, new FTPersonalisationTextConfig());
-		this.ftPersonalisationTextStructure = new FTPersonalisationTextStructure(container);
+		this.ftPersonalisationTextService = new FTPersonalisationTextService(container);
 		console.info(`[${this.config.name}] Component initialized`);
 	}
 
@@ -30,7 +30,7 @@ export class FTPersonalisationText extends FTWebconfortBaseComponent<FTPersonali
 		if (success) {
 			this.config.active = true;
 			// Enable personalization in the service
-			this.ftPersonalisationTextStructure.enablePersonalisation(true);
+			this.ftPersonalisationTextService.enablePersonalisation(true);
 			this.applyTextSettings();
 			this.updateText();
 			return success;
@@ -45,7 +45,7 @@ export class FTPersonalisationText extends FTWebconfortBaseComponent<FTPersonali
 		if (success) {
 			this.config.active = false;
 			// Disable personalization in the service
-			this.ftPersonalisationTextStructure.disablePersonalisation();
+			this.ftPersonalisationTextService.disablePersonalisation();
 			this.updateText();
 			return success;
 		}
@@ -58,7 +58,7 @@ export class FTPersonalisationText extends FTWebconfortBaseComponent<FTPersonali
 
 	private applyTextSettings(): void {
 		try {
-			const settings = this.ftPersonalisationTextStructure.setTextSettings({});
+			const settings = this.ftPersonalisationTextService.setTextSettings({});
 			console.debug(`[${this.config.name}] Applied text settings`, settings);
 		} catch (error) {
 			console.error(`[${this.config.name}] Failed to apply text settings`, error);

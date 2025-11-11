@@ -1,6 +1,7 @@
-import { template } from "./template/index.html";
-import { FTArthroseStructure } from "./service/structure";
 import { FTWebconfortBaseComponent } from "../../basecomponent/index";
+import { template } from "./template/index.html";
+import { FTArthroseService } from "./service/index";
+
 
 /** Configuration for the Arthrose component */
 export class FTArthroseConfig {
@@ -12,10 +13,10 @@ export class FTArthroseConfig {
 
 /** Arthrose component extending the plain TypeScript base */
 export class FTArthrose extends FTWebconfortBaseComponent<FTArthroseConfig> {
-	private readonly ftArthroseStructure: FTArthroseStructure;
+	private readonly ftArthroseService: FTArthroseService;
 	constructor(container: HTMLElement) {
 		super(container, new FTArthroseConfig());
-		this.ftArthroseStructure = new FTArthroseStructure(container);
+		this.ftArthroseService = new FTArthroseService(container);
 		console.log("FTArthrose module initialized");
 	}
 
@@ -26,7 +27,7 @@ export class FTArthrose extends FTWebconfortBaseComponent<FTArthroseConfig> {
 		if (success) {
 			this.config.active = true;
 			this.updateText();
-			this.ftArthroseStructure.enableArthrose(true);
+			this.ftArthroseService.enableArthrose(true);
 			return success;
 		}
 		return false;
@@ -37,7 +38,7 @@ export class FTArthrose extends FTWebconfortBaseComponent<FTArthroseConfig> {
 		const success = (super.onDeactivate?.() ?? true) as boolean;
 		if (success) {
 			this.config.active = true;
-			this.ftArthroseStructure.enableArthrose(false);
+			this.ftArthroseService.enableArthrose(false);
 			this.updateText();
 			return success;
 		}

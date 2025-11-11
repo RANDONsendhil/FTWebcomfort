@@ -135,9 +135,8 @@ export class FTPersonalisationTextStructure {
         }
       });
 
-      // Close dropdowns when clicking outside (use shadow root if available)
-      const eventTarget = this.shadowRoot || document;
-      eventTarget.addEventListener("click", (e) => {
+      // Close dropdowns when clicking outside (on document level)
+      document.addEventListener("click", (e) => {
         const target = e.target as HTMLElement;
         if (!target.closest(".custom-dropdown") || !container.contains(target)) {
           this.closeAllDropdowns();

@@ -1,6 +1,6 @@
 import template from "./template/index.html";
 import { FTWebconfortBaseComponent } from "../../basecomponent/index";
-import { FTEpilepsieStructure } from "./service/structure";
+import { FTEpilepsieService } from "./service/index";
 
 /** Configuration for the Epilepsie component */
 export class FTEpilepsieConfig {
@@ -12,11 +12,11 @@ export class FTEpilepsieConfig {
 
 /** Epilepsie component extending the plain TypeScript base */
 export class FTEpilepsie extends FTWebconfortBaseComponent<FTEpilepsieConfig> {
-	private readonly ftEpilepsieStructure: FTEpilepsieStructure;
+	private readonly ftEpilepsieService: FTEpilepsieService;
 
 	constructor(container: HTMLElement) {
 		super(container, new FTEpilepsieConfig());
-		this.ftEpilepsieStructure = new FTEpilepsieStructure(container);
+		this.ftEpilepsieService = new FTEpilepsieService(container);
 		console.log("FTEpilepsie component initialized");
 	}
 
@@ -27,7 +27,7 @@ export class FTEpilepsie extends FTWebconfortBaseComponent<FTEpilepsieConfig> {
 			this.config.active = true;
 			this.config.active = false;
 			this.updateText();
-			this.ftEpilepsieStructure.disableAnimations();
+			this.ftEpilepsieService.disableAnimations();
 			return success;
 		}
 		return false;
@@ -38,7 +38,7 @@ export class FTEpilepsie extends FTWebconfortBaseComponent<FTEpilepsieConfig> {
 		if (success) {
 			this.config.active = false;
 			this.updateText();
-			this.ftEpilepsieStructure.enableAnimations();
+			this.ftEpilepsieService.enableAnimations();
 			return success;
 		}
 		return false;

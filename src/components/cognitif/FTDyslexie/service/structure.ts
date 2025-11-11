@@ -1,201 +1,88 @@
+// Constants
+const FONT_STYLE_ID = "dyslexia-font-style";
+const FONT_FAMILY_NAME = "OpenDyslexic";
+const FALLBACK_FONTS = "Arial, sans-serif";
+const FONT_BASE_PATH = "/fonts/dyslexic/";
+
+// Font file mapping - Using public folder paths
+const FONT_FILES: Record<string, string> = {
+	bold: `${FONT_BASE_PATH}OpenDyslexic-Bold.otf`,
+	regular: `${FONT_BASE_PATH}OpenDyslexic-Regular.otf`,
+	italic: `${FONT_BASE_PATH}OpenDyslexic-Italic.otf`,
+	bold_italic: `${FONT_BASE_PATH}OpenDyslexic-BoldItalic.otf`,
+	alta_bold: `${FONT_BASE_PATH}OpenDyslexicAlta-Bold.otf`,
+	alta_italic: `${FONT_BASE_PATH}OpenDyslexicAlta-Italic.otf`,
+	alta_bold_italic: `${FONT_BASE_PATH}OpenDyslexicAlta-BoldItalic.otf`,
+	alta_normal: `${FONT_BASE_PATH}OpenDyslexicAlta-Regular.otf`,
+	mono_regular: `${FONT_BASE_PATH}OpenDyslexicMono-Regular.otf`,
+};
+
 /**
- * Service/Configuration class for Dyslexie component
- * This acts as a configuration provider and service layer
+ * Remove existing font style element from document
  */
-import { enableFontDys, disableFontDys, changeFontDys } from "./index";
-
-export class FTDyslexiqueStructure {
-    public name = "Police dyslexie";
-    public description = "Améliore la lisibilité pour les personnes dyslexiques avec des polices spécialisées.";
-    public active: boolean = false;
-
-    private container?: HTMLElement;
-    private currentFont: string = "regular";
-
-    constructor(container?: HTMLElement) {
-        console.log("FTDyslexiqueService initialized");
-        this.container = container;
-        this.initializeDropdowns();
-    }
-
-    /**
-     * Enable dyslexie font functionality
-     */
-    public enableDyslexique(): void {
-        this.active = true;
-        enableFontDys();
-        this.applyCurrentFont();
-        console.log("Dyslexie: enabled");
-    }
-
-    /**
-     * Disable dyslexie font functionality
-     */
-    public disableDyslexique(): void {
-        this.active = false;
-        disableFontDys();
-        console.log("Dyslexie: disabled");
-    }
-
-
-
-    /**
-     * Get the component container element
-     */
-    public getContainer(): HTMLElement | null {
-        return this.container || null;
-    }
-
-    /**
-     * Initialize dropdown event listeners and functionality
-     */
-    private initializeDropdowns(): void {
-        setTimeout(() => {
-            const container = this.getContainer();
-            if (!container) return;
-
-            container.addEventListener("change", (e) => {
-                console.log("Dyslexie: Change event detected", e.target);
-                const target = e.target as HTMLInputElement;
-
-                if (target && target.type === "radio") {
-                    console.log("Dyslexie: Radio button changed", { name: target.name, value: target.value });
-
-                    if (target.closest(".dropdown-options")) {
-                        const dropdown = target.name;
-                        const value = target.value;
-
-                        console.log("Dyslexie: Processing dropdown change", { dropdown, value });
-
-                        if (dropdown === "fontDys") {
-                            this.updateFont(value);
-                        }
-                    }
-                }
-            });
-
-            container.addEventListener("click", (e) => {
-                const target = e.target as HTMLElement;
-                const dropdownButton = target.closest("[data-dropdown]") as HTMLElement;
-
-                if (dropdownButton) {
-                    e.stopPropagation();
-                    this.handleDropdownClick(dropdownButton);
-                }
-            });
-
-            document.addEventListener("click", (e) => {
-                const target = e.target as HTMLElement;
-                if (!target.closest(".custom-dropdown") || !container.contains(target)) {
-                    this.closeAllDropdowns();
-                }
-            });
-        }, 100);
-    }
-
-    /**
-     * Handle dropdown button click events
-     */
-    private handleDropdownClick(button: HTMLElement): void {
-        const dropdown = button.getAttribute("data-dropdown");
-        const options = button.nextElementSibling as HTMLElement;
-        const dropdownContainer = button.closest(".custom-dropdown") as HTMLElement;
-
-        if (!options || !dropdownContainer) return;
-
-        const isCurrentlyOpen = options.classList.contains("show");
-
-        this.closeAllDropdowns();
-
-        if (!isCurrentlyOpen) {
-            options.classList.add("show");
-            button.classList.add("open");
-            dropdownContainer.classList.add("open");
-        }
-    }
-
-    /**
-     * Close all open dropdown menus
-     */
-    private closeAllDropdowns(): void {
-        const container = this.getContainer();
-        if (!container) return;
-
-        container.querySelectorAll(".dropdown-options.show").forEach((options) => {
-            options.classList.remove("show");
-            const button = options.previousElementSibling as HTMLElement;
-            const dropdownContainer = options.closest(".custom-dropdown") as HTMLElement;
-
-            if (button) {
-                button.classList.remove("open");
-            }
-            if (dropdownContainer) {
-                dropdownContainer.classList.remove("open");
-            }
-        });
-    }
-
-    /**
-     * Update the selected dyslexie font
-     */
-    private updateFont(fontValue: string): void {
-        console.log("Dyslexie: Updating font to", fontValue);
-        this.currentFont = fontValue;
-        this.updateDropdownDisplay("fontDys", fontValue);
-
-        if (this.active) {
-            changeFontDys(fontValue);
-        }
-    }
-
-    /**
-     * Update the visual display of dropdown selections
-     */
-    private updateDropdownDisplay(property: string, value: string): void {
-        const container = this.getContainer();
-        if (!container) return;
-
-        const button = container.querySelector(`[data-dropdown="${property}"]`) as HTMLElement;
-        if (!button) {
-            console.warn(`Dyslexie: Button not found for property: ${property}`);
-            return;
-        }
-
-        const textSpan = button.querySelector(".dropdown-text") as HTMLElement;
-        const radio = container.querySelector(`input[name="${property}"][value="${value}"]`) as HTMLInputElement;
-
-        if (radio && textSpan) {
-            radio.checked = true;
-            const label = radio.nextElementSibling as HTMLElement;
-            if (label) {
-                textSpan.textContent = label.textContent || value;
-            }
-        } else {
-            console.warn(`Dyslexie: Missing elements for ${property}`, { radio: !!radio, textSpan: !!textSpan });
-        }
-
-        const options = button.nextElementSibling as HTMLElement;
-        const dropdownContainer = button.closest(".custom-dropdown") as HTMLElement;
-
-        if (options) {
-            options.classList.remove("show");
-            button.classList.remove("open");
-        }
-        if (dropdownContainer) {
-            dropdownContainer.classList.remove("open");
-        }
-    }
-
-    /**
-     * Apply the currently selected dyslexie font if component is active
-     */
-    private applyCurrentFont(): void {
-        if (this.currentFont && this.active) {
-            changeFontDys(this.currentFont);
-        }
-    }
+function removeFontStyle(): void {
+	const existingStyle = document.getElementById(FONT_STYLE_ID);
+	if (existingStyle) {
+		existingStyle.remove();
+	}
 }
 
+/**
+ * Create and inject font-face CSS
+ */
+function injectFontFace(fontPath: string, fontFamily: string): void {
+	const style = document.createElement("style");
+	style.id = FONT_STYLE_ID;
+	style.textContent = `
+        @font-face {
+            font-family: '${fontFamily}';
+            src: url('${fontPath}') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        /* Apply dyslexic font excluding container-ftwebconfomt */
+        body *:not(.container-ftwebconfomt):not(.container-ftwebconfomt *) {
+            font-family: '${fontFamily}', ${FALLBACK_FONTS} !important;
+        }
+    `;
 
+	document.head.appendChild(style);
+}
 
+/**
+ * Remove injected CSS rules and reset font
+ */
+export function disableFontDys(): void {
+	document.documentElement.style.removeProperty("font-family");
+	removeFontStyle();
+	console.log("Dyslexia font disabled");
+}
 
+/**
+ * Helper: toggle disable/enable
+ */
+export function enableFontDys(): void {
+	disableFontDys();
+}
+
+/**
+ * Change the font for dyslexia support
+ * @param fontValue The font variant to apply (e.g., 'bold', 'regular', 'italic')
+ */
+export function changeFontDys(fontValue: string): void {
+	console.log(`Changing font to: ${fontValue}`);
+
+	removeFontStyle();
+
+	const fontPath = FONT_FILES[fontValue];
+
+	if (!fontPath) {
+		console.error(`Unknown font value: ${fontValue}. Available: ${Object.keys(FONT_FILES).join(", ")}`);
+		return;
+	}
+
+	injectFontFace(fontPath, FONT_FAMILY_NAME);
+
+	console.log(`Font applied: ${fontValue} from ${fontPath}`);
+}

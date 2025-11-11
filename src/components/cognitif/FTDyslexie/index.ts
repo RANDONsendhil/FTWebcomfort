@@ -1,6 +1,6 @@
 import { template, dropDown } from "./template/index.html";
 import { FTWebconfortBaseComponent } from "../../basecomponent/index";
-import { FTDyslexiqueStructure } from "./service/structure"
+import { FTDyslexiqueService } from "./service/index"
 
 /** Configuration for Dyslexie component */
 export class FTDysConfig {
@@ -13,10 +13,10 @@ export class FTDysConfig {
 /** Dyslexie component as a plain TypeScript module */
 export class FTDyslexie extends FTWebconfortBaseComponent<FTDysConfig> {
 
-	private readonly ftDyslexieStructure: FTDyslexiqueStructure;
+	private readonly ftDyslexieService: FTDyslexiqueService;
 	constructor(container: HTMLElement) {
 		super(container, new FTDysConfig());
-		this.ftDyslexieStructure = new FTDyslexiqueStructure(container)
+		this.ftDyslexieService = new FTDyslexiqueService(container)
 
 	}
 
@@ -25,7 +25,7 @@ export class FTDyslexie extends FTWebconfortBaseComponent<FTDysConfig> {
 		const success = (super.onActivate?.() ?? true) as boolean;
 		if (success) {
 			this.config.active = true;
-			this.ftDyslexieStructure.enableDyslexique();
+			this.ftDyslexieService.enableDyslexique();
 			this.updateText();
 			return success;
 		}
@@ -37,7 +37,7 @@ export class FTDyslexie extends FTWebconfortBaseComponent<FTDysConfig> {
 		const success = (super.onDeactivate?.() ?? true) as boolean;
 		if (success) {
 			this.config.active = false;
-			this.ftDyslexieStructure.disableDyslexique();
+			this.ftDyslexieService.disableDyslexique();
 			this.updateText();
 			return success;
 		}

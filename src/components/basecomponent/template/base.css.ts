@@ -60,7 +60,7 @@ export default /*css*/ `
       transform: translateX(20px);
     }
     
-        .component-content {
+    .component-content {
       padding: 15px;
       display: none;
     }
