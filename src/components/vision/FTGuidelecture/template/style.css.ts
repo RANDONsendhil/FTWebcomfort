@@ -36,7 +36,6 @@ export default `
   transform: translateX(20px);
 }
   
-
 .dropdown-option label {
   display: block;
   padding: 10px 12px;
@@ -78,28 +77,32 @@ export default `
   font-weight: 500;
 }
 
-.controls-section h4 {
+.controls-section h4, h5, h6 {
   margin: 0 0 16px 0;
-  font-size: 16px;
+  
   font-weight: 600;
   color: var(--text-color);
   border-bottom: 2px solid var(--primary-color);
-  padding-bottom: 8px;
 }
 
 .control-group {
   margin-bottom: 16px;
 }
+/*
 
-.control-label {
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 8px;
-  color: var(--text-color);
-}
+ */
+ 
 
-/* Button group for guide types */
+/* Button group for guide types  */
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text-color);
+    font-size: 13px;
+   
+
+
+
 .button-group {
   display: flex;
   gap: 8px;

@@ -61,6 +61,9 @@ export class MainApp extends HTMLElement {
                      <div style="padding: 2px;">
                         <div id="guideLectureContainer"></div>
                     </div>
+                    <div style="padding: 2px;">
+                      <div id="loupeContainer"></div>
+                    </div>
                 </div>
             </aside>
         </div>
@@ -68,13 +71,7 @@ export class MainApp extends HTMLElement {
   }
 
   connectedCallback() {
-    console.log("MainApp connected to DOM");
-    console.log("Shadow DOM contents:", this.shadow.innerHTML);
-    
-    // Add event listeners for sidebar functionality
     this.setupEventListeners();
-    
-    // Wait for loadModules to be available and then load modules
     this.waitForLoadModules();
   }
 

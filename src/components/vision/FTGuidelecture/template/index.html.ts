@@ -6,8 +6,7 @@ export const template = /*html*/ `
 <div class="guide-lecture-container">
     
     <div class="controls-section">
-        <h4>Configuration du Guide de Lecture</h4>
-        
+        <h5>Configuration du Guide de Lecture</h5>
         <!-- Type de règle -->
         <div class="control-group">
             <label class="control-label">Type de règle :</label>

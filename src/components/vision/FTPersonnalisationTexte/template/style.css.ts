@@ -65,7 +65,7 @@ export default `
 }
 
 .custom-dropdown.compact {
-  margin-bottom: 5px;
+  margin-bottom: 7px;
 }
 
 .custom-dropdown.open {

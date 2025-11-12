@@ -23,26 +23,26 @@ export class FTEpilepsie extends FTWebconfortBaseComponent<FTEpilepsieConfig> {
 	protected override onActivate(): boolean {
 		console.info(`[${this.config.name}] Activated`);
 		const success = (super.onActivate?.() ?? true) as boolean;
-		if (success) {
-			this.config.active = true;
-			this.config.active = false;
-			this.updateText();
-			this.ftEpilepsieService.disableAnimations();
-			return success;
-		}
-		return false;
+			if (success) {
+				this.config.active = true;
+				this.config.active = false;
+				this.updateText();
+				this.ftEpilepsieService.disableAnimations();
+				return success;
+			}
+			return false;
 	}
 	protected override onDeactivate(): boolean {
 		console.info(`[${this.config.name}] Deactivated`);
 		const success = (super.onDeactivate?.() ?? true) as boolean;
-		if (success) {
-			this.config.active = false;
-			this.updateText();
-			this.ftEpilepsieService.enableAnimations();
-			return success;
+			if (success) {
+				this.config.active = false;
+				this.updateText();
+				this.ftEpilepsieService.enableAnimations();
+				return success;
+			}
+			return false;
 		}
-		return false;
-	}
 
 	protected override updateText(): void {
 		if (!this.$textStatus) return;

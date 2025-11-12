@@ -192,6 +192,15 @@
     font-size: 14px;
   }
 
+  .control-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text-color);
+}
+
+
   .component-toggle {
     width: 40px;
     height: 20px;

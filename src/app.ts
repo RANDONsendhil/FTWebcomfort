@@ -1,8 +1,9 @@
 import { FTDyslexie } from "./components/cognitif/FTDyslexie/index";
 import { FTEpilepsie } from "./components/cognitif/FTEpilepsie/index";
 import { FTArthrose } from "./components/moteur/FTArthrose/index";
-import { FTGuideLecture } from "./components/vision/guide_lecture";
-import { FTPersonalisationText } from "./components/vision/personnalisationTexte/index";
+import { FTGuideLecture } from "./components/vision/FTGuidelecture/index";
+import { FTPersonalisationText } from "./components/vision/FTPersonnalisationTexte/index";
+import { FTLoupe } from "./components/vision/FTLoupe/index";
 import "./main-app"; // Import to register the custom element
 
 /** Load and instantiate all accessibility modules */
@@ -12,6 +13,7 @@ function loadModules(container: HTMLElement | ShadowRoot): void {
   const dyslexieEl = container.querySelector<HTMLDivElement>("#dyslexieContainer");
   const arthroseEl = container.querySelector<HTMLDivElement>("#arthroseContainer");
   const guideLectureEl = container.querySelector<HTMLDivElement>("#guideLectureContainer");
+  const loupeEl = container.querySelector<HTMLDivElement>("#loupeContainer");
   
   
   console.log("Container elements found:", { epilepsieEl, dyslexieEl, arthroseEl });
@@ -38,6 +40,11 @@ if (arthroseEl) {
 if (guideLectureEl) {
   new FTGuideLecture(guideLectureEl);
   console.log("Arthrose module loaded");
+}
+
+if (loupeEl) {
+  new FTLoupe(loupeEl);
+  console.log("Loupe module loaded");
 }
 
   console.log("All modules loaded successfully");
