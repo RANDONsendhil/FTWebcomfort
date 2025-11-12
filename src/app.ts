@@ -7,7 +7,6 @@ import "./main-app"; // Import to register the custom element
 
 /** Load and instantiate all accessibility modules */
 function loadModules(container: HTMLElement | ShadowRoot): void {
-  console.log("loadModules called with container:", container);
   const personalizationTextEl = container.querySelector<HTMLDivElement>("#personnalisationTexteContainer");
   const epilepsieEl = container.querySelector<HTMLDivElement>("#epilepsieContainer");
   const dyslexieEl = container.querySelector<HTMLDivElement>("#dyslexieContainer");
@@ -51,6 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Dispatch ready event to notify components that loadModules is available
   document.dispatchEvent(new CustomEvent('ftwebcomfort-ready'));
+ 
 });
 
 export { loadModules };

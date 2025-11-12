@@ -92,7 +92,7 @@ export default `
 }
 
 .custom-dropdown.compact {
-  margin-bottom: 15px;
+  margin-bottom: 7px;
 }
 
 .custom-dropdown.open {

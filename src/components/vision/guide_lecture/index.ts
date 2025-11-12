@@ -1,8 +1,8 @@
-import {template} from "./template/index.html";
+import { template } from "./template/index.html";
 import { FTWebconfortBaseComponent } from "../../basecomponent/index";
 import { FTGuideReaderService } from "./service/index";
 
-/** Configuration for the Epilepsie component */
+/** Configuration for the Guide Lecture component */
 export class FTGuideLectureConfig {
 	readonly name = "Guide de lecture";
 	active = false;
@@ -10,7 +10,7 @@ export class FTGuideLectureConfig {
 	readonly template = template;
 }
 
-/** Epilepsie component extending the plain TypeScript base */
+/** Guide Lecture component extending the base component */
 export class FTGuideLecture extends FTWebconfortBaseComponent<FTGuideLectureConfig> {
 	private readonly ftGuideReaderService: FTGuideReaderService;
 	private guideLigneButton: HTMLButtonElement | null = null;
@@ -23,7 +23,6 @@ export class FTGuideLecture extends FTWebconfortBaseComponent<FTGuideLectureConf
 	private opacityValueDisplay: HTMLElement | null = null;
 	private statusText: HTMLElement | null = null;
 
-
 	constructor(container: HTMLElement) {
 		super(container, new FTGuideLectureConfig());
 		this.ftGuideReaderService = new FTGuideReaderService(container);
@@ -33,42 +32,26 @@ export class FTGuideLecture extends FTWebconfortBaseComponent<FTGuideLectureConf
 
 	protected onInit(): void {
 		console.log("Initializing Guide Lecture controls...");
-		
-		// Récupération des éléments du template
 		this.initializeElements();
 		this.setupEventListeners();
 		this.applyGuideReaderSettings();
 	}
 
 	private initializeElements(): void {
-		console.log( " ====================================> "+this.$container);
-		
-		// Push buttons pour le type de règle
 		this.guideLigneButton = this.$container?.querySelector('#guideLigne') as HTMLButtonElement;
 		this.guideFocusButton = this.$container?.querySelector('#guideFocus') as HTMLButtonElement;
-		
-		// Contrôles de couleur
 		this.guideColorPicker = this.$container?.querySelector('#guideColor') as HTMLInputElement;
 		this.colorPreview = this.$container?.querySelector('.color-preview') as HTMLElement;
-		
-		// Contrôles de taille
 		this.guideSizeSlider = this.$container?.querySelector('#guideSize') as HTMLInputElement;
 		this.sizeValueDisplay = this.$container?.querySelector('.size-value') as HTMLElement;
-		
-		// Contrôles d'opacité
 		this.guideOpacitySlider = this.$container?.querySelector('#guideOpacity') as HTMLInputElement;
 		this.opacityValueDisplay = this.$container?.querySelector('.opacity-value') as HTMLElement;
-		
-		// Texte de statut
 		this.statusText = this.$container?.querySelector('#statusText') as HTMLElement;
 		
-		console.log("Guide Lecture elements initialized:", {
-			guideLigneButton: !!this.guideLigneButton,
-			guideFocusButton: !!this.guideFocusButton,
-			guideColorPicker: !!this.guideColorPicker,
-			guideSizeSlider: !!this.guideSizeSlider,
-			guideOpacitySlider: !!this.guideOpacitySlider
-		});
+		// Initialize color preview with color picker's default value
+		if (this.colorPreview && this.guideColorPicker) {
+			this.colorPreview.style.backgroundColor = this.guideColorPicker.value;
+		}
 	}
 
 	private setupEventListeners(): void {
@@ -87,89 +70,39 @@ export class FTGuideLecture extends FTWebconfortBaseComponent<FTGuideLectureConf
 				});
 			}
 		});
-
-		console.log("Guide Lecture event listeners configured");
 	}
 
 	private handleElementEvent(elementType: string, event: Event, element: HTMLElement): void {
 		const target = event.target as HTMLInputElement | HTMLButtonElement;
 		const value = (target as HTMLInputElement).value || (target as HTMLButtonElement).dataset.value || '';
-		console.log(elementType);
+		
+		const guideTypeOptions = {
+			isActive: this.config.active,
+			sizeSlider: this.guideSizeSlider,
+			sizeDisplay: this.sizeValueDisplay,
+			ligneButton: this.guideLigneButton,
+			focusButton: this.guideFocusButton
+		};
 		
 		switch (elementType) {
 			case 'guideLigne':
-				// Toggle active class
-				this.guideLigneButton?.classList.add('active');
-				this.guideFocusButton?.classList.remove('active');
-				
-				// Update slider min value for ligne mode
-				if (this.guideSizeSlider) {
-					this.guideSizeSlider.min = '1';
-					// Ensure current value is valid for ligne mode
-					if (parseFloat(this.guideSizeSlider.value) < 1) {
-						this.guideSizeSlider.value = '3';
-					}
-					// Always update display with current slider value
-					if (this.sizeValueDisplay) {
-						this.sizeValueDisplay.textContent = `${this.guideSizeSlider.value}px`;
-					}
-				}
-				
-				if (this.guideLigneButton && this.config.active) {
-					const currentSize = this.guideSizeSlider?.value || '3';
-					this.ftGuideReaderService.updateRulerGuideReaderWithSize('ligne', this.guideLigneButton, currentSize);
-				}
+				this.ftGuideReaderService.handleGuideTypeChange('ligne', element, guideTypeOptions);
 				break;
 
 			case 'guideFocus':
-				// Toggle active class
-				this.guideFocusButton?.classList.add('active');
-				this.guideLigneButton?.classList.remove('active');
-				
-				// Update slider min value for focus mode
-				if (this.guideSizeSlider) {
-					this.guideSizeSlider.min = '10';
-					// Ensure current value is valid for focus mode
-					if (parseFloat(this.guideSizeSlider.value) < 10) {
-						this.guideSizeSlider.value = '20';
-					}
-					// Always update display with current slider value
-					if (this.sizeValueDisplay) {
-						this.sizeValueDisplay.textContent = `${this.guideSizeSlider.value}px`;
-					}
-				}
-				
-				if (this.guideFocusButton && this.config.active) {
-					const currentSize = this.guideSizeSlider?.value || '20';
-					this.ftGuideReaderService.updateRulerGuideReaderWithSize('focus', this.guideFocusButton, currentSize);
-				}
+				this.ftGuideReaderService.handleGuideTypeChange('focus', element, guideTypeOptions);
 				break;
 
 			case 'guideColor':
-				if (this.guideColorPicker) {
-					this.ftGuideReaderService.updatedRulerColorGuideReader(value, this.guideColorPicker);
-				}
-				if (this.colorPreview) {
-					this.colorPreview.style.backgroundColor = value;
-				}
+				this.ftGuideReaderService.handleColorChange(value, element, this.colorPreview);
 				break;
 
 			case 'guideRulerSize':
-				if (this.guideSizeSlider) {
-					this.ftGuideReaderService.updateRulerThicknessGuideReader(value, this.guideSizeSlider);
-				}
-				if (this.sizeValueDisplay) {
-					this.sizeValueDisplay.textContent = `${value}px`;
-				}
+				this.ftGuideReaderService.handleSizeChange(value, element, this.sizeValueDisplay);
 				break;
 
 			case 'guideOpacity':
-				if (this.guideOpacitySlider) {
-					this.ftGuideReaderService.updateRulerOpacityGuideReader(value, this.guideOpacitySlider);
-				}
-				if (this.opacityValueDisplay) {
-					this.opacityValueDisplay.textContent = `${Math.round(parseFloat(value) * 100)}%`;
-				}
+				this.ftGuideReaderService.handleOpacityChange(value, element, this.opacityValueDisplay);
 				break;
 
 			default:
@@ -184,11 +117,23 @@ export class FTGuideLecture extends FTWebconfortBaseComponent<FTGuideLectureConf
 		if (success) {
 			this.config.active = true;
 			this.updateText();
-			// this.ftGuideReaderService.enableGuideReader();
+
+			const defaultType = this.guideLigneButton?.classList.contains('active') ? 'ligne' : 'focus';
+			if (this.$container) {
+				this.ftGuideReaderService.enableGuideReader(defaultType, this.$container, {
+					colorPicker: this.guideColorPicker,
+					colorPreview: this.colorPreview,
+					sizeSlider: this.guideSizeSlider,
+					sizeDisplay: this.sizeValueDisplay,
+					opacitySlider: this.guideOpacitySlider,
+					opacityDisplay: this.opacityValueDisplay
+				});
+			}
 			return success;
 		}
 		return false;
 	}
+
 	protected override onDeactivate(): boolean {
 		console.info(`[${this.config.name}] Deactivated`);
 		const success = (super.onDeactivate?.() ?? true) as boolean;
@@ -203,14 +148,8 @@ export class FTGuideLecture extends FTWebconfortBaseComponent<FTGuideLectureConf
 
 	protected override updateText(): void {
 		if (!this.$textStatus) return;
-		this.$textStatus.textContent = this.active ? "Desactivation: Désactivée" : "Desactivation: Activée";
+		this.$textStatus.textContent = this.active ? "Désactivation: Désactivée" : "Désactivation: Activée";
 	}
 
 	private applyGuideReaderSettings(): void {}
- 
-
-
-	  
 }
-
-//

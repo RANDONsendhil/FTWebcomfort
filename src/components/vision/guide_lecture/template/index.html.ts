@@ -21,25 +21,22 @@ export const template = /*html*/ `
             </div>
         </div>
         
-        <!-- Couleur de la règle -->
         <div class="control-group">
             <label class="control-label" for="guideColor">Couleur de la règle :</label>
             <div class="color-input-container">
-                <input type="color" id="guideColor" value="#130b2aff" class="color-picker">
+                <input type="color" id="guideColor" value="#3a3a3a" class="color-picker">
                 <span class="color-preview"></span>
             </div>
         </div>
         
-        <!-- Taille de la règle -->
         <div class="control-group">
             <label class="control-label" for="guideSize">Épaisseur de la règle :</label>
             <div class="size-control">
-                <input type="range" id="guideSize" min="50" max="100" value="10" class="size-slider">
+                <input type="range" id="guideSize" min="1" max="100" value="10" class="size-slider">
                 <span class="size-value">3px</span>
             </div>
         </div>
         
-        <!-- Opacité -->
         <div class="control-group">
             <label class="control-label" for="guideOpacity">Transparence :</label>
             <div class="opacity-control">
@@ -51,6 +48,6 @@ export const template = /*html*/ `
 </div>
 `;
 
-export default template;
+ 
 
  

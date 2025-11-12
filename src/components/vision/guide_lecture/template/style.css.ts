@@ -203,7 +203,7 @@ export default `
   height: 25px;
   border-radius: 50%;
   border: 2px solid #e0e0e0;
-  background-color: #ff0000;
+  background-color: #201e1eff;
 }
 
 /* Size slider */
