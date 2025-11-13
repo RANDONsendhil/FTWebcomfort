@@ -321,3 +321,256 @@ export function disableArthrose(): void {
   
   console.log(`Mode arthrose désactivé - ${totalRestored} éléments restaurés`);
 }
+
+// ============================================================================
+// CURSOR CUSTOMIZATION
+// ============================================================================
+
+let cursorStyleElement: HTMLStyleElement | null = null;
+const CURSOR_STYLE_ID = 'ft-arthrose-cursor-styles';
+
+/**
+ * Generate SVG cursor data URI
+ */
+function generateCursorSVG(size: number, color: string): string {
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 32 32">
+      <defs>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      <path d="M 2,2 L 2,28 L 10,20 L 14,28 L 18,26 L 14,18 L 22,18 Z" 
+            fill="${color}" 
+            stroke="#000" 
+            stroke-width="1.5" 
+            filter="url(#glow)"/>
+      <path d="M 2,2 L 2,28 L 10,20 L 14,28 L 18,26 L 14,18 L 22,18 Z" 
+            fill="${color}" 
+            stroke="#fff" 
+            stroke-width="0.5"/>
+    </svg>
+  `;
+  return `data:image/svg+xml;base64,${btoa(svg)}`;
+}
+
+/**
+ * Get cursor color hex value
+ */
+function getCursorColor(color: string): string {
+  const colors: Record<string, string> = {
+    'default': '#000000',
+    'green': '#00ff00',
+    'yellow': '#ffff00',
+    'red': '#ff0000'
+  };
+  return colors[color] || colors['default'];
+}
+
+/**
+ * Get cursor size in pixels
+ */
+function getCursorSize(size: string): number {
+  const sizes: Record<string, number> = {
+    'normal': 32,
+    'moyen': 48,
+    'grand': 64
+  };
+  return sizes[size] || sizes['normal'];
+}
+
+/**
+ * Apply custom cursor
+ */
+export function applyCursor(size: string, color: string): void {
+  // Remove existing cursor styles
+  removeCursor();
+  
+  // If size is normal and color is default, don't apply custom cursor (use system default)
+  if (size === 'normal' && color === 'default') {
+    console.log('Using system default cursor');
+    return;
+  }
+  
+  const cursorSize = getCursorSize(size);
+  const cursorColor = getCursorColor(color);
+  const cursorURL = generateCursorSVG(cursorSize, cursorColor);
+  
+  cursorStyleElement = document.createElement('style');
+  cursorStyleElement.id = CURSOR_STYLE_ID;
+  cursorStyleElement.textContent = `
+    /* Default cursor - highest priority */
+    html, html * {
+      cursor: url('${cursorURL}') 0 0, auto !important;
+    }
+    
+    /* Pointer cursor (clickable elements) - override with pointer fallback */
+    a, a *, 
+    button, button *,
+    input[type="button"], 
+    input[type="submit"], 
+    input[type="reset"],
+    input[type="checkbox"],
+    input[type="radio"],
+    [role="button"], [role="button"] *,
+    .clickable, .clickable *,
+    summary, label[for],
+    select, option, 
+    [onclick], [onclick] *,
+    [role="link"], [role="menuitem"],
+    [tabindex]:not([tabindex="-1"]),
+    .pointer, .pointer *,
+    [style*="cursor: pointer"],
+    [style*="cursor:pointer"] {
+      cursor: url('${cursorURL}') 0 0, pointer !important;
+    }
+    
+    /* Text cursor */
+    input[type="text"], input[type="email"], input[type="password"], 
+    input[type="search"], input[type="tel"], input[type="url"],
+    textarea, [contenteditable="true"] {
+      cursor: url('${cursorURL}') 0 0, text !important;
+    }
+    
+    /* Move cursor */
+    [draggable="true"], .draggable {
+      cursor: url('${cursorURL}') 0 0, move !important;
+    }
+    
+    /* Grab cursor */
+    .grab {
+      cursor: url('${cursorURL}') 0 0, grab !important;
+    }
+    
+    /* Grabbing cursor */
+    .grabbing {
+      cursor: url('${cursorURL}') 0 0, grabbing !important;
+    }
+    
+    /* Resize cursors */
+    .resize-n, [style*="resize: vertical"] {
+      cursor: url('${cursorURL}') 0 0, n-resize !important;
+    }
+    .resize-s {
+      cursor: url('${cursorURL}') 0 0, s-resize !important;
+    }
+    .resize-e, [style*="resize: horizontal"] {
+      cursor: url('${cursorURL}') 0 0, e-resize !important;
+    }
+    .resize-w {
+      cursor: url('${cursorURL}') 0 0, w-resize !important;
+    }
+    .resize-ne {
+      cursor: url('${cursorURL}') 0 0, ne-resize !important;
+    }
+    .resize-nw {
+      cursor: url('${cursorURL}') 0 0, nw-resize !important;
+    }
+    .resize-se, [style*="resize: both"] {
+      cursor: url('${cursorURL}') 0 0, se-resize !important;
+    }
+    .resize-sw {
+      cursor: url('${cursorURL}') 0 0, sw-resize !important;
+    }
+    .resize-ew {
+      cursor: url('${cursorURL}') 0 0, ew-resize !important;
+    }
+    .resize-ns {
+      cursor: url('${cursorURL}') 0 0, ns-resize !important;
+    }
+    .resize-nesw {
+      cursor: url('${cursorURL}') 0 0, nesw-resize !important;
+    }
+    .resize-nwse {
+      cursor: url('${cursorURL}') 0 0, nwse-resize !important;
+    }
+    .resize-col {
+      cursor: url('${cursorURL}') 0 0, col-resize !important;
+    }
+    .resize-row {
+      cursor: url('${cursorURL}') 0 0, row-resize !important;
+    }
+    
+    /* Help cursor */
+    [title]:hover, .help {
+      cursor: url('${cursorURL}') 0 0, help !important;
+    }
+    
+    /* Wait/Progress cursor */
+    .wait, [aria-busy="true"] {
+      cursor: url('${cursorURL}') 0 0, wait !important;
+    }
+    .progress {
+      cursor: url('${cursorURL}') 0 0, progress !important;
+    }
+    
+    /* Not allowed cursor */
+    [disabled], .disabled, [aria-disabled="true"] {
+      cursor: url('${cursorURL}') 0 0, not-allowed !important;
+    }
+    .no-drop {
+      cursor: url('${cursorURL}') 0 0, no-drop !important;
+    }
+    
+    /* Zoom cursors */
+    .zoom-in {
+      cursor: url('${cursorURL}') 0 0, zoom-in !important;
+    }
+    .zoom-out {
+      cursor: url('${cursorURL}') 0 0, zoom-out !important;
+    }
+    
+    /* Copy cursor */
+    .copy {
+      cursor: url('${cursorURL}') 0 0, copy !important;
+    }
+    
+    /* Crosshair cursor */
+    .crosshair, canvas {
+      cursor: url('${cursorURL}') 0 0, crosshair !important;
+    }
+    
+    /* Cell cursor */
+    .cell, td, th {
+      cursor: url('${cursorURL}') 0 0, cell !important;
+    }
+    
+    /* Context menu cursor */
+    .context-menu {
+      cursor: url('${cursorURL}') 0 0, context-menu !important;
+    }
+    
+    /* All scroll cursor */
+    .all-scroll {
+      cursor: url('${cursorURL}') 0 0, all-scroll !important;
+    }
+    
+    /* None cursor */
+    .cursor-none {
+      cursor: url('${cursorURL}') 0 0, none !important;
+    }
+  `;
+  
+  document.head.appendChild(cursorStyleElement);
+  console.log(`Cursor applied: size=${size}, color=${color}`);
+}
+
+/**
+ * Remove custom cursor
+ */
+export function removeCursor(): void {
+  if (cursorStyleElement) {
+    cursorStyleElement.remove();
+    cursorStyleElement = null;
+  }
+  
+  const existingStyle = document.getElementById(CURSOR_STYLE_ID);
+  if (existingStyle) {
+    existingStyle.remove();
+  }
+}
+

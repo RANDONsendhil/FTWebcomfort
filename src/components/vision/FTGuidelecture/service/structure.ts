@@ -1,7 +1,6 @@
 /**
  * Guide structure and utility functions
  */
-
 export class GuideStructure {
 	private mouseMoveHandler: ((e: MouseEvent) => void) | null = null;
 

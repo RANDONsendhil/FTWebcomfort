@@ -51,25 +51,20 @@ export function applyPageZoom(zoomLevel: number): void {
 	zoomStyleElement = document.createElement('style');
 	zoomStyleElement.id = ZOOM_STYLE_ID;
 	zoomStyleElement.textContent = `
-		/* Apply zoom to all direct children of body EXCEPT container-ftwebconfomt */
-		body > *:not(.container-ftwebconfomt):not(main-app) {
-			transform: scale(${zoom}) !important;
-			transform-origin: top left !important;
+		/* Zoom the entire page content */
+		html {
+			zoom: ${zoom};
 		}
 		
-		/* Adjust body to accommodate zoomed content */
-		body {
-			overflow-x: auto !important;
-		}
-		
-		/* Ensure the component stays in its original size and position */
-		.container-ftwebconfomt {
-			transform: none !important;
+		/* Keep the FTWebcomfort component at normal size */
+		.container-ftwebconfomt,
+		main-app {
+			zoom: ${1 / zoom} !important;
 			position: fixed !important;
 		}
 		
 		.container-ftwebconfomt * {
-			transform: none !important;
+			zoom: 1 !important;
 		}
 	`;
 	
@@ -82,7 +77,9 @@ export function createLens(zoomLevel: number): void {
 	removeLens();
 	
 	const zoom = parseFloat(String(zoomLevel)) || 2;
-	const lensSize = 200;
+	// Increase lens size based on zoom level
+	// Base size 200px, increases proportionally with zoom
+	const lensSize = 150 + (zoom * 50); // Range: 200px at zoom 1.5, to 350px at zoom 4
 	
 	// Create lens element
 	lensElement = document.createElement('div');
@@ -141,71 +138,49 @@ export function createLens(zoomLevel: number): void {
 			}
 			
 			// Position lens centered on cursor
-			const lensX = e.clientX - lensRadius;
-			const lensY = e.clientY - lensRadius;
+			let lensX = e.clientX - lensRadius;
+			let lensY = e.clientY - lensRadius;
+			
+			// Keep lens within viewport bounds
+			// Prevent lens from going above the viewport
+			if (lensY < 0) {
+				lensY = 0;
+			}
+			// Prevent lens from going below the viewport
+			if (lensY + lensSize > window.innerHeight) {
+				lensY = window.innerHeight - lensSize;
+			}
+			// Prevent lens from going left of viewport
+			if (lensX < 0) {
+				lensX = 0;
+			}
+			// Prevent lens from going right of viewport
+			if (lensX + lensSize > window.innerWidth) {
+				lensX = window.innerWidth - lensSize;
+			}
 			
 			lensElement.style.left = `${lensX}px`;
 			lensElement.style.top = `${lensY}px`;
 			lensElement.style.display = 'block';
 			
-			// Use background image approach for better performance
-			// Calculate the background position to show the area under the cursor
-			const bgX = e.pageX;
-			const bgY = e.pageY;
+			// Use clientX/clientY for viewport coordinates to match what's visible
+			const bgX = e.clientX + window.scrollX;
+			const bgY = e.clientY + window.scrollY;
 			
-			// Create a snapshot of the area under the cursor
-			lensElement.style.backgroundImage = 'none';
-			lensElement.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-			
-			// Get element under cursor
-			const elementsUnderCursor = document.elementsFromPoint(e.clientX, e.clientY);
-			
-			// Clone and magnify content
+			// Clear previous content
 			lensElement.innerHTML = '';
 			
-			// Create a container for the magnified view
-			const container = document.createElement('div');
-			Object.assign(container.style, {
-				position: 'absolute',
-				left: '0',
-				top: '0',
-				width: '100%',
-				height: '100%',
-				transformOrigin: 'center center',
-				transform: `scale(${zoom})`,
-				pointerEvents: 'none'
-			});
-			
-			// Clone a portion of the document
-			const viewportClone = document.documentElement.cloneNode(true) as HTMLElement;
-			
-			// Remove the lens from the clone
-			const lensClone = viewportClone.querySelector('#ft-magnifying-lens');
-			if (lensClone) lensClone.remove();
-			
-			// Style the clone
-			Object.assign(container.style, {
-				position: 'absolute',
-				transform: `scale(${zoom})`,
-				transformOrigin: '0 0',
-				left: `-${(bgX - lensRadius / zoom) * zoom}px`,
-				top: `-${(bgY - lensRadius / zoom) * zoom}px`,
-				width: `${document.documentElement.scrollWidth}px`,
-				height: `${document.documentElement.scrollHeight}px`
-			});
-			
-			// Simplified approach: just show zoomed background
+			// Clone the body for magnification
 			const bodyClone = document.body.cloneNode(true) as HTMLElement;
 			
 			// Remove the lens itself from the clone to avoid recursion
 			const clonedLens = bodyClone.querySelector('#ft-magnifying-lens');
 			if (clonedLens) clonedLens.remove();
 			
-			// Remove the FTWebcomfort component from the clone - check multiple selectors
+			// Remove the FTWebcomfort component from the clone
 			const clonedComponent = bodyClone.querySelector('.container-ftwebconfomt');
 			if (clonedComponent) clonedComponent.remove();
 			
-			// Also remove main-app element if it exists
 			const mainAppClone = bodyClone.querySelector('main-app');
 			if (mainAppClone) mainAppClone.remove();
 			
@@ -213,15 +188,41 @@ export function createLens(zoomLevel: number): void {
 			const ftElements = bodyClone.querySelectorAll('[class*="ftwebconfomt"], [class*="ft-web"], [id*="ftwebconfomt"]');
 			ftElements.forEach(el => el.remove());
 			
+			// Ensure images load properly in the clone
+			const clonedImages = bodyClone.querySelectorAll('img');
+			clonedImages.forEach((clonedImg, index) => {
+				const originalImages = document.body.querySelectorAll('img');
+				if (originalImages[index]) {
+					// Copy the actual rendered image source
+					clonedImg.src = originalImages[index].src;
+					clonedImg.style.display = originalImages[index].style.display || 'inline';
+				}
+			});
+			
+			// Copy computed styles for better rendering
+			const clonedDivs = bodyClone.querySelectorAll('div, p, span, h1, h2, h3, h4, h5, h6');
+			const originalDivs = document.body.querySelectorAll('div, p, span, h1, h2, h3, h4, h5, h6');
+			clonedDivs.forEach((clonedEl, index) => {
+				if (originalDivs[index]) {
+					const computedStyle = window.getComputedStyle(originalDivs[index]);
+					(clonedEl as HTMLElement).style.backgroundColor = computedStyle.backgroundColor;
+					(clonedEl as HTMLElement).style.color = computedStyle.color;
+				}
+			});
+			
+			// Position and scale the cloned body
 			Object.assign(bodyClone.style, {
 				position: 'absolute',
 				margin: '0',
+				padding: '0',
 				transform: `scale(${zoom})`,
 				transformOrigin: '0 0',
-				left: `-${(e.pageX - lensRadius / zoom) * zoom}px`,
-				top: `-${(e.pageY - lensRadius / zoom) * zoom}px`,
+				left: `-${(bgX - lensRadius / zoom) * zoom}px`,
+				top: `-${(bgY - lensRadius / zoom) * zoom}px`,
 				width: `${document.body.scrollWidth}px`,
-				pointerEvents: 'none'
+				height: `${document.body.scrollHeight}px`,
+				pointerEvents: 'none',
+				overflow: 'visible'
 			});
 			
 			lensElement.appendChild(bodyClone);

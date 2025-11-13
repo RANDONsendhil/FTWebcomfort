@@ -10,87 +10,22 @@ export class FTLoupeConfig {
 	readonly template = template;
 }
 
-/** Epilepsie component extending the plain TypeScript base */
+/** Loupe component extending the plain TypeScript base */
 export class FTLoupe extends FTWebconfortBaseComponent<FTLoupeConfig> {
 	private readonly ftLoupeService: FTLoupeService;
-	private zoomButton: HTMLButtonElement | null = null;
-	private lensButton: HTMLButtonElement | null = null;
-	private zoomSlider: HTMLInputElement | null = null;
-	private zoomDisplay: HTMLElement | null = null;
-	private currentMode: 'zoom' | 'lens' = 'zoom';
 
 	constructor(container: HTMLElement) {
 		super(container, new FTLoupeConfig());
 		this.ftLoupeService = new FTLoupeService(container);
-		this.initializeControls();
+		this.setupEventListeners();
 		console.log("FTLoupe component initialized");
 	}
 
-	private initializeControls(): void {
-		this.zoomButton = this.$container.querySelector('#zoomButton');
-		this.lensButton = this.$container.querySelector('#lensButton');
-		this.zoomSlider = this.$container.querySelector('#zoomSlider');
-		this.zoomDisplay = this.$container.querySelector('#zoomDisplay');
-		
-		// Add event listeners
-		this.zoomButton?.addEventListener('click', () => this.handleModeChange('zoom'));
-		this.lensButton?.addEventListener('click', () => this.handleModeChange('lens'));
-		this.zoomSlider?.addEventListener('input', (e) => this.handleZoomChange((e.target as HTMLInputElement).value));
-	}
-
-	private handleModeChange(mode: 'zoom' | 'lens'): void {
-		if (!this.active) return;
-		
-		// If switching modes, first disable the current mode
-		if (this.currentMode !== mode) {
-			if (this.currentMode === 'zoom') {
-				this.ftLoupeService.disableZoom();
-			} else {
-				this.ftLoupeService.disableLens();
-			}
-		}
-		
-		this.currentMode = mode;
-		
-		// Toggle button active state
-		this.zoomButton?.classList.toggle('active', mode === 'zoom');
-		this.lensButton?.classList.toggle('active', mode === 'lens');
-		
-		// Update slider range based on mode
-		if (this.zoomSlider) {
-			if (mode === 'zoom') {
-				this.zoomSlider.min = '1';
-				this.zoomSlider.max = '5';
-				this.zoomSlider.step = '0.1';
-				this.zoomSlider.value = '1.5';
-			} else {
-				this.zoomSlider.min = '1.5';
-				this.zoomSlider.max = '4';
-				this.zoomSlider.step = '0.1';
-				this.zoomSlider.value = '2';
-			}
-		}
-		
-		// Apply the mode with current slider value
-		this.handleZoomChange(this.zoomSlider?.value || '1.5');
-	}
-
-	private handleZoomChange(value: string): void {
-		if (!this.active) return;
-		
-		const zoomValue = parseFloat(value);
-		
-		// Update display
-		if (this.zoomDisplay) {
-			this.zoomDisplay.textContent = `${zoomValue.toFixed(1)}x`;
-		}
-		
-		// Apply zoom based on current mode
-		if (this.currentMode === 'zoom') {
-			this.ftLoupeService.applyZoom(value);
-		} else {
-			this.ftLoupeService.applyLens(value);
-		}
+	private setupEventListeners(): void {
+		this.ftLoupeService.setupEventListeners(
+			(mode) => this.ftLoupeService.handleModeChange(mode, this.active),
+			(value) => this.ftLoupeService.handleZoomChange(value, this.active)
+		);
 	}
 
 	protected override onActivate(): boolean {
@@ -99,10 +34,7 @@ export class FTLoupe extends FTWebconfortBaseComponent<FTLoupeConfig> {
 		if (success) {
 			this.config.active = true;
 			this.updateText();
-			
-			// Initialize with default mode
-			this.handleModeChange(this.currentMode);
-			
+			this.ftLoupeService.handleModeChange(this.ftLoupeService.getCurrentMode(), this.active);
 			return success;
 		}
 		return false;

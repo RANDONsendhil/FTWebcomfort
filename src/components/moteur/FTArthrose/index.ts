@@ -14,10 +14,19 @@ export class FTArthroseConfig {
 /** Arthrose component extending the plain TypeScript base */
 export class FTArthrose extends FTWebconfortBaseComponent<FTArthroseConfig> {
 	private readonly ftArthroseService: FTArthroseService;
+	
 	constructor(container: HTMLElement) {
 		super(container, new FTArthroseConfig());
 		this.ftArthroseService = new FTArthroseService(container);
+		this.setupEventListeners();
 		console.log("FTArthrose module initialized");
+	}
+
+	private setupEventListeners(): void {
+		this.ftArthroseService.setupEventListeners(
+			(size) => this.ftArthroseService.handleSizeChange(size, this.active),
+			(color) => this.ftArthroseService.handleColorChange(color, this.active)
+		);
 	}
 
 	protected override onActivate(): boolean {
@@ -37,8 +46,9 @@ export class FTArthrose extends FTWebconfortBaseComponent<FTArthroseConfig> {
 		console.info(`[${this.config.name}] Deactivated`);
 		const success = (super.onDeactivate?.() ?? true) as boolean;
 		if (success) {
-			this.config.active = true;
+			this.config.active = false;
 			this.ftArthroseService.enableArthrose(false);
+			this.ftArthroseService.disableAllCustomizations();
 			this.updateText();
 			return success;
 		}

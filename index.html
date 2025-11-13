@@ -6,13 +6,15 @@
 		<link rel="stylesheet" href="https://cdn-t.ft-qvr.fr/studio/design-system/css/styles.css" />
 		<link rel="stylesheet" href="./src/style.css" />
 
-		<style> 
+		<style>
+			body {
+				font-family: "Courier New", Courier, monospace;
+			}
+			.container{
+				max-width: 40%;
+			}
 
-		body{ 
-			font-family: 'Courier New', Courier, monospace
-		}
-		
-					#box {
+			#box {
 				width: 100px;
 				height: 100px;
 				background-color: rgb(9, 12, 103);
@@ -49,40 +51,60 @@
 			.zone:hover {
 				background-color: #45a049;
 			}
+			.sample,
+			.zone {
+				display: flex;
+				justify-content: flex-end;
+				flex-direction: row;
+			}
+			#containerBox {
+				height: 300px;
+				width: 100px;
+			}
 		</style>
 	</head>
-
 	<body>
- 
-			<main-app data-no-font-change></main-app>
-			 
-		<div>
-			<p>
-				Introduction La documentation s'articule autour de fondamentaux qui traitent des couleurs, typographie, espacements et points de
-				rupture, une bibliothèque d'icônes et d'illustrations et de bonnes pratiques. Au sein de chaque composant, l'onglet "Documentation"
-				renvoie lui vers une présentation sous Figma décrivant son anatomie, son usage et ses variantes. Enfin, on trouve aussi pour certains
-				composants, une documentation associée à son usage sous la forme d'un webcomposant. Bonnes pratiques Le design system permet à France
-				Travail d’assurer pour nos sites une cohérence visuelle conforme à la charte France Travail tout en s'assurant des conditions
-				d’accessibilité, d'écoconception et d’utilisabilité optimales pour nos usagers.
-			</p>
-			
+		<main-app></main-app>
+		
+		<div class="container sammple">
+			<div class="sample">
+				<p>
+					Introduction La documentation s'articule autour de fondamentaux qui traitent des couleurs, typographie, espacements et points de
+					rupture, une bibliothèque d'icônes et d'illustrations et de bonnes pratiques. Au sein de chaque composant, l'onglet
+					"Documentation" renvoie lui vers une présentation sous Figma décrivant son anatomie, son usage et ses variantes. Enfin, on trouve
+					aussi pour certains composants, une documentation associée à son usage sous la forme d'un webcomposant. Bonnes pratiques Le design
+					system permet à France Travail d’assurer pour nos sites une cohérence visuelle conforme à la charte France Travail tout en
+					s'assurant des conditions d’accessibilité, d'écoconception et d’utilisabilité optimales pour nos usagers.
+				</p>
+			</div>
+
+			<div class="sample">
+				<div class="zone" onclick="alert('Zone 1 clicked')">Zone 1</div>
+				<div class="zone" onclick="alert('Zone 2 clicked')">Zone 2</div>
+				<div class="zone" onclick="alert('Zone 3 clicked')">Zone 3</div>
+				<div class="zone" onclick="alert('Zone 4 clicked')">Zone 4</div>
+				<input type="text" aria-label="enter some thing" />
+			</div>
+			<div class="sample">
+				<label>
+					<input type="radio" name="color" value="red" />
+					Red
+				</label>
+			</div>
+			<div class="sample">
+				<label>
+					<input type="radio" name="color" value="green" />
+					Red
+				</label>
+			</div>
+			<div class="sample" id="containerBox">
+				<div id="box"></div>
+			</div>
+
+			<div class="sample">
+				<img src="animation.gif" alt="animation" style="width: 300px; height: 300px" />
+			</div>
 		</div>
-		<div class="zone" onclick="alert('Zone 1 clicked')">Zone 1</div>
-			<div class="zone" onclick="alert('Zone 2 clicked')">Zone 2</div>
-			<div class="zone" onclick="alert('Zone 3 clicked')">Zone 3</div>
-			<div class="zone" onclick="alert('Zone 4 clicked')">Zone 4</div>
-			<input type="text" aria-label="enter some thing" />
-			<label>
-				<input type="radio" name="color" value="red" />
-				Red
-			</label>
-
-			<div id="box"></div>
-
-			<img src="animation.gif" alt="animation" style="width: 300px; height: 300px" />
-			<!-- Barre latérale des composants -->
-		<!-- <script type="module" src="./dist/script.js"></script> -->
-
 		<script type="module" src="/src/app.ts"></script>
 	</body>
 </html>

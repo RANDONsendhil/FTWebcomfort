@@ -64,6 +64,9 @@ export class MainApp extends HTMLElement {
                     <div style="padding: 2px;">
                       <div id="loupeContainer"></div>
                     </div>
+                    <div style="padding: 2px;">
+                      <div id="modeAffichage"></div>
+                    </div>
                 </div>
             </aside>
         </div>

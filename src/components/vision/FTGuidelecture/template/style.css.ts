@@ -1,6 +1,4 @@
 export default `
- 
-
 .component-title {
   font-weight: 600;
   color: var(--text-color);
@@ -88,9 +86,14 @@ export default `
 .control-group {
   margin-bottom: 16px;
 }
-/*
 
- */
+.radio-group{
+      display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-color);
+}
  
 
 /* Button group for guide types  */
@@ -147,8 +150,10 @@ export default `
 
 /* Radio buttons (kept for backward compatibility) */
 .radio-group {
-  display: flex;
-  gap: 16px;
+display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex-direction: column;
 }
 
 .radio-item {

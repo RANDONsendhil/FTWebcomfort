@@ -1,9 +1,10 @@
 import { FTDyslexie } from "./components/cognitif/FTDyslexie/index";
 import { FTEpilepsie } from "./components/cognitif/FTEpilepsie/index";
 import { FTArthrose } from "./components/moteur/FTArthrose/index";
-import { FTGuideLecture } from "./components/vision/FTGuidelecture/index";
+import { FTGuideLecture } from "./components/vision/FTGuideLecture/index";
 import { FTPersonalisationText } from "./components/vision/FTPersonnalisationTexte/index";
 import { FTLoupe } from "./components/vision/FTLoupe/index";
+import {FTModeAffichage } from"./components/vision/FTModeAffichage"
 import "./main-app"; // Import to register the custom element
 
 /** Load and instantiate all accessibility modules */
@@ -14,6 +15,7 @@ function loadModules(container: HTMLElement | ShadowRoot): void {
   const arthroseEl = container.querySelector<HTMLDivElement>("#arthroseContainer");
   const guideLectureEl = container.querySelector<HTMLDivElement>("#guideLectureContainer");
   const loupeEl = container.querySelector<HTMLDivElement>("#loupeContainer");
+  const modeAffichageEl = container.querySelector<HTMLDivElement>("#modeAffichage");
   
   
   console.log("Container elements found:", { epilepsieEl, dyslexieEl, arthroseEl });
@@ -47,6 +49,11 @@ if (loupeEl) {
   console.log("Loupe module loaded");
 }
 
+if (modeAffichageEl) {
+  new FTModeAffichage(modeAffichageEl);
+  console.log("Loupe module loaded");
+}
+
   console.log("All modules loaded successfully");
 }
 
@@ -54,10 +61,7 @@ if (loupeEl) {
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("FTWebcomfort app initialized");
-  
-  // Dispatch ready event to notify components that loadModules is available
   document.dispatchEvent(new CustomEvent('ftwebcomfort-ready'));
- 
 });
 
 export { loadModules };
